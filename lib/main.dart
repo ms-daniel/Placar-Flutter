@@ -1,8 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-main() => runApp(new PerguntaApp());
+main() {
+  /*SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+  ]);*/
+  runApp(new PerguntaApp());
+} 
 
-class PerguntaApp extends StatelessWidget{
+enum Teams { 
+  team1, team2
+}
+
+class PlacarState extends State<PlacarApp>{
+
+  var teamOnePoints = 0, teamTwoPoints = 0, teamOneSets = 0, teamTwoSets = 0;
+  var maxPoints = 15;
+
+  void incrementPoints(Teams team, int point){
+    //incrementa/decrementa a pontuação de algum dos times
+    switch(team){
+      case Teams.team1:
+        teamTwoPoints += point;
+        break;
+
+      case Teams.team2:
+        teamOnePoints += point;
+        break;
+
+      default:
+        break;
+    }
+
+    //quando atingir o maximo de pontos definido
+    //incremnta os sets e reseta a pontuação
+    if(teamOnePoints >= maxPoints){
+      teamOneSets += 1;
+      teamOnePoints = 0;
+    }
+    else if(teamTwoPoints >= maxPoints){
+      teamTwoSets += 1;
+      teamTwoPoints = 0;
+    }
+      
+
+  }
+}
+
+class PlacarApp extends StatefulWidget{
   void responder(){
     print('Respondido');
   }
