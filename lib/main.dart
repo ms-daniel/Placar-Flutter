@@ -72,12 +72,12 @@ class _PlacarState extends State<PlacarApp>{
 
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
+        /*appBar: AppBar(
           title: const Text('Placar - Yonkous'),
           centerTitle: true,
           backgroundColor: Colors.black,
           foregroundColor: Colors.red[400],
-        ),
+        ),*/
         body: Column(
           children: <Widget>[
             BarraSuperiorPlacar(),
