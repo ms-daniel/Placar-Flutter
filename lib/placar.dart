@@ -1,10 +1,18 @@
+import 'package:fluter_proj1/main.dart';
 import 'package:flutter/material.dart';
+
+
+enum Teams { 
+  team1, team2
+}
 
 class Placar extends StatelessWidget {
   var _teamOnePoints = 0, _teamTwoPoints = 0, _teamOneSets = 0, _teamTwoSets = 0;
   var _maxPoints = 15;
 
-  Placar(this._teamOnePoints, this._teamOneSets, this._teamTwoPoints, this._teamTwoSets, this._maxPoints, {super.key});
+  final void Function(Teams, int) alterPoints;
+
+  Placar(this._teamOnePoints, this._teamOneSets, this._teamTwoPoints, this._teamTwoSets, this._maxPoints, this.alterPoints,{super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +27,9 @@ class Placar extends StatelessWidget {
             width: 80,
             //botao de menos do time 1
             child: IconButton(
-              onPressed: () {  },
+              onPressed: () { 
+                alterPoints(Teams.team1,-1);
+              },
               iconSize: 50,
               color:  Colors.red[900],
               icon: const Icon(Icons.remove_circle_outline), 
@@ -30,7 +40,9 @@ class Placar extends StatelessWidget {
             width: 80,
             //botao de mais do time 1
             child: IconButton(
-              onPressed: () {  },
+              onPressed: () { 
+                alterPoints(Teams.team1,1);
+              },
               iconSize: 50,
               color: Colors.green[900],
               icon: const Icon(Icons.add_circle_outline), 
@@ -101,7 +113,9 @@ class Placar extends StatelessWidget {
             width: 80,
             //botao de mais do time 2
             child: IconButton(
-              onPressed: () {  },
+              onPressed: () { 
+                alterPoints(Teams.team2,1);
+              },
               iconSize: 50,
               color: Colors.green[900],
               icon: const Icon(Icons.add_circle_outline),
@@ -112,7 +126,9 @@ class Placar extends StatelessWidget {
             width: 80,
             //botao de menos do time 2
             child: IconButton(
-              onPressed: () {  },
+              onPressed: (){
+                alterPoints(Teams.team2,-1);
+              },
               iconSize: 50,
               color:  Colors.red[900],
               icon: const Icon(Icons.remove_circle_outline), 
