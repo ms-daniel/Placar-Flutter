@@ -24,7 +24,7 @@ class Placar extends StatelessWidget {
 
         children: <Widget>[
           SizedBox(
-            width: 80,
+            width: 60,
             //botao de menos do time 1
             child: IconButton(
               onPressed: () { 
@@ -37,7 +37,7 @@ class Placar extends StatelessWidget {
           ),
 
           SizedBox(
-            width: 80,
+            width: 60,
             //botao de mais do time 1
             child: IconButton(
               onPressed: () { 
@@ -110,7 +110,7 @@ class Placar extends StatelessWidget {
           ),
           
           SizedBox(
-            width: 80,
+            width: 60,
             //botao de mais do time 2
             child: IconButton(
               onPressed: () { 
@@ -123,7 +123,7 @@ class Placar extends StatelessWidget {
             ),
           ),
           SizedBox(
-            width: 80,
+            width: 60,
             //botao de menos do time 2
             child: IconButton(
               onPressed: (){
