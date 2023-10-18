@@ -3,11 +3,8 @@ import 'package:flutter/material.dart';
 enum Teams { team1, team2 }
 
 class Placar extends StatelessWidget {
-  var _teamOnePoints = 0,
-      _teamTwoPoints = 0,
-      _teamOneSets = 0,
-      _teamTwoSets = 0;
-  var _maxPoints = 15;
+  final _teamOnePoints, _teamTwoPoints, _teamOneSets, _teamTwoSets;
+  final _maxPoints;
 
   final void Function(Teams, int) alterPoints;
 
