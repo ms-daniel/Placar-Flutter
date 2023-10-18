@@ -1,12 +1,9 @@
-import 'package:fluter_proj1/BarraSuperiorPlacar.dart';
+import './BarraSuperiorPlacar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import './Placar.dart';
 
 main() {
-  /*SystemChrome.setPreferredOrientations([
-    DeviceOrientation.landscapeLeft,
-  ]);*/
   runApp(PlacarApp());
 } 
 
@@ -20,7 +17,11 @@ class _PlacarState extends State<PlacarApp>{
   void initState() {
     super.initState();
     //define a orientação do app
-    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeRight]);
+    SystemChrome.setPreferredOrientations([
+      //DeviceOrientation.landscapeRight, 
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight
+    ]);
     //define a tela em full screen
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
