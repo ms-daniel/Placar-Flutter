@@ -23,15 +23,21 @@ class _PlacarState extends State<Placar> {
   _PlacarState(this._teamOnePoints, this._teamOneSets, this._teamTwoPoints,
       this._teamTwoSets, this._maxPoints);
 
-  void _ResetPoints() {
-    setState(() {
-      _teamOnePoints = 0;
-      _teamTwoPoints = 0;
-    });
+  //reseta pontuação
+  void _ResetPoints(){
+    if(_teamOnePoints > 0 || _teamTwoPoints > 0){
+      setState(() {
+        _teamOnePoints = 0;
+        _teamTwoPoints = 0;
+      });
+    }   
   }
 
+  ///Incrementa pontuação de algum dos times.
+  ///Teams team: recebe o enum referente ao time. team1, team2.
+  ///int point: pontuação a ser incrementada/decrementada.
   void _alterPoints(Teams team, int point) {
-    //incrementa/decrementa a pontuação de algum dos times
+    
     switch (team) {
       case Teams.team1:
         if ((_teamOnePoints >= 0 && point > 0) ||
