@@ -24,14 +24,14 @@ class PlacarApp extends StatefulWidget {
 }
 
 class _PlacarState extends State<PlacarApp> {
-  void _alterMaxPoints(int value) {
+  /*void _alterMaxPoints(int value) {
     setState(() {
       if (value > 0) {
         this._maxPoints = value;
       }
     });
     print('pontaçai max: $_maxPoints');
-  }
+  }*/
 
   @override
   void initState() {

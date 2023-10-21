@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:yon_scoreboard/Model/PlacarModel.dart';
-import 'package:yon_scoreboard/enums.dart';
+import 'package:yon_scoreboard/shared/enums.dart';
 
 class PlacarController extends ChangeNotifier {
   final PlacarModel _placarModel = PlacarModel();
