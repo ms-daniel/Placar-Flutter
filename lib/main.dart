@@ -9,7 +9,7 @@ main() {
   runApp(
     ChangeNotifierProvider(
       create: (context) => PlacarController(),
-      child: PlacarApp(),
+      child: const PlacarApp(),
     ),
   );
 }
@@ -18,6 +18,7 @@ class PlacarApp extends StatefulWidget {
   const PlacarApp({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _PlacarState createState() {
     return _PlacarState();
   }
