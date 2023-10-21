@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class Configurations extends StatelessWidget {
-  var dropdownValue = 15;
+  var dropdownValue = 0;
+  final void Function(int) _alterMaxPoints;
+
+  Configurations(this._alterMaxPoints, this.dropdownValue);
 
   @override
   Widget build(BuildContext context) {
@@ -9,7 +12,7 @@ class Configurations extends StatelessWidget {
       appBar: AppBar(
         title: const Center(child: Text('Configurações')),
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(4.0), // Altura da borda
+          preferredSize: const Size.fromHeight(4.0), // Altura da borda
           child: Container(
             decoration: const BoxDecoration(
               border: Border(
@@ -47,6 +50,13 @@ class Configurations extends StatelessWidget {
                   if (value != null) {
                     dropdownValue =
                         value; // criar função para renderizar a view
+                    _alterMaxPoints(value);
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            Configurations(_alterMaxPoints, dropdownValue),
+                      ),
+                    );
                   }
                 },
                 items: List<DropdownMenuItem<int>>.generate(14, (index) {
@@ -65,7 +75,7 @@ class Configurations extends StatelessWidget {
           ),
         ],
       ),
-      backgroundColor: Color.fromARGB(255, 11, 11, 11),
+      backgroundColor: const Color.fromARGB(255, 11, 11, 11),
     );
   }
 }
