@@ -53,8 +53,10 @@ class PlacarController extends ChangeNotifier {
   /// Alterar pontuacaoo maxima do placar:
   /// - [newPoints]: Inteiro contendo o novo valor
   set maxPoints(int newPoint) {
-    _placarModel.maxPoints = newPoint;
-    notifyListeners();
+    if (newPoint > 0) {
+      _placarModel.maxPoints = newPoint;
+      notifyListeners();
+    }
   }
 
   ///retorna o valor da pontuação do time 1
