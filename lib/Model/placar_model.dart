@@ -34,10 +34,6 @@ class PlacarModel {
     _instance ??=
         PlacarModel._internal(); //atribue apenas se _instance for null
 
-    if (_instance != null)
-      print(
-          'entrou aquiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
-
     return _instance!;
   }
 

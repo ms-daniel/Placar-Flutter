@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yon_scoreboard/Controller/placar_controller.dart';
 
 class Configurations extends StatelessWidget {
-  var dropdownValue = 0;
+  const Configurations({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final placarController = context.watch<PlacarController>();
+    var dropdownValue = placarController.maxPoints;
+
     return Scaffold(
-        /*appBar: AppBar(
+      appBar: AppBar(
         title: const Center(child: Text('Configurações')),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4.0), // Altura da borda
@@ -47,13 +52,13 @@ class Configurations extends StatelessWidget {
                   if (value != null) {
                     dropdownValue =
                         value; // criar função para renderizar a view
-                    _alterMaxPoints(value);
-                    Navigator.of(context).pushReplacement(
+                    placarController.maxPoints = value;
+                    /*Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
                         builder: (context) =>
                             Configurations(_alterMaxPoints, dropdownValue),
                       ),
-                    );
+                    );*/
                   }
                 },
                 items: List<DropdownMenuItem<int>>.generate(14, (index) {
@@ -72,7 +77,7 @@ class Configurations extends StatelessWidget {
           ),
         ],
       ),
-      backgroundColor: const Color.fromARGB(255, 11, 11, 11),*/
-        );
+      backgroundColor: const Color.fromARGB(255, 11, 11, 11),
+    );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:yon_scoreboard/Controller/PlacarController.dart';
+import 'package:yon_scoreboard/Controller/placar_controller.dart';
 import 'package:yon_scoreboard/shared/enums.dart';
 
 class Placar extends StatefulWidget {

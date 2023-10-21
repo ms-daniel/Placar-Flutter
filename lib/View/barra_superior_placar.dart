@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:yon_scoreboard/View/configurations.dart';
 
 class BarraSuperiorPlacar extends StatelessWidget {
+  const BarraSuperiorPlacar({super.key});
+
   //empilhar tela de configuração na tela atual
   // ignore: non_constant_identifier_names
   void _OpenConfigurations(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => Configurations(),
+      builder: (context) => const Configurations(),
     ));
   }
-
-  const BarraSuperiorPlacar();
 
   @override
   Widget build(BuildContext context) {
