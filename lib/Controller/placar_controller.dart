@@ -43,9 +43,11 @@ class PlacarController extends ChangeNotifier {
 
   ///Reseta a pontuacao de ambos os times
   void resetPoints() {
-    _resetTeamOnePoints();
-    _resetTeamTwoPoints();
-    notifyListeners();
+    if (teamOnePoints > 0 && teamTwoPoints > 0) {
+      _resetTeamOnePoints();
+      _resetTeamTwoPoints();
+      notifyListeners();
+    }
   }
 
   /// Alterar pontuacaoo maxima do placar:
