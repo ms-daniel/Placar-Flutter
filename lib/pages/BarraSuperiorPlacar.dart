@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:yon_scoreboard/pages/configurations.dart';
 
-class BarraSuperiorPlacar extends StatelessWidget{
+class BarraSuperiorPlacar extends StatelessWidget {
+  //empilhar tela de configuração na tela atual
+  // ignore: non_constant_identifier_names
+  void _OpenConfigurations(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => const Configurations(),
+    ));
+  }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
@@ -27,12 +35,11 @@ class BarraSuperiorPlacar extends StatelessWidget{
               fontSize: 18,
             ),
           ),
-          
         ),
         SizedBox(
           child: IconButton(
             onPressed: () {
-              // Adicione a ação do botão de voltar aqui
+              _OpenConfigurations(context);
             },
             color: Colors.white,
             icon: const Icon(Icons.settings), // Ícone de voltar
