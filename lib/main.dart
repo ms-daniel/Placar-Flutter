@@ -23,7 +23,16 @@ class _PlacarState extends State<PlacarApp> {
       _teamOneSets = 0,
       _teamTwoSets = 0;
 
-  final _maxPoints = 15;
+  var _maxPoints = 15;
+
+  void _alterMaxPoints(int value) {
+    setState(() {
+      if (value > 0) {
+        this._maxPoints = value;
+      }
+    });
+    print('pontaçai max: $_maxPoints');
+  }
 
   @override
   void initState() {
@@ -50,7 +59,7 @@ class _PlacarState extends State<PlacarApp> {
         ),*/
         body: Column(
           children: <Widget>[
-            BarraSuperiorPlacar(),
+            BarraSuperiorPlacar(_alterMaxPoints, _maxPoints),
             Placar(_teamOnePoints, _teamOneSets, _teamTwoPoints, _teamTwoSets,
                 _maxPoints),
           ],
