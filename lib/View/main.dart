@@ -1,7 +1,7 @@
-import 'pages/BarraSuperiorPlacar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'pages/placar.dart';
+import 'package:yon_scoreboard/View/BarraSuperiorPlacar.dart';
+import 'package:yon_scoreboard/View/placar.dart';
 
 main() {
   runApp(const PlacarApp());
@@ -49,19 +49,12 @@ class _PlacarState extends State<PlacarApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       home: Scaffold(
-        /*appBar: AppBar(
-          title: const Text('Placar - Yonkous'),
-          centerTitle: true,
-          backgroundColor: Colors.black,
-          foregroundColor: Colors.red[400],
-        ),*/
         body: Column(
           children: <Widget>[
-            BarraSuperiorPlacar(_alterMaxPoints, _maxPoints),
-            Placar(_teamOnePoints, _teamOneSets, _teamTwoPoints, _teamTwoSets,
-                _maxPoints),
+            BarraSuperiorPlacar(),
+            Placar(),
           ],
         ),
         backgroundColor: Colors.black,

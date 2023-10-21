@@ -4,26 +4,14 @@ import 'package:flutter/material.dart';
 enum Teams { team1, team2 }
 
 class Placar extends StatefulWidget {
-  final int _teamOnePoints, _teamTwoPoints, _teamOneSets, _teamTwoSets;
-  final int _maxPoints;
-
-  const Placar(this._teamOnePoints, this._teamOneSets, this._teamTwoPoints,
-      this._teamTwoSets, this._maxPoints,
-      {super.key});
+  const Placar({super.key});
 
   @override
   // ignore: no_logic_in_create_state
-  _PlacarState createState() => _PlacarState(
-      _teamOnePoints, _teamOneSets, _teamTwoPoints, _teamTwoSets, _maxPoints);
+  _PlacarState createState() => _PlacarState();
 }
 
 class _PlacarState extends State<Placar> {
-  int _teamOnePoints, _teamTwoPoints, _teamOneSets, _teamTwoSets;
-  final int _maxPoints;
-
-  _PlacarState(this._teamOnePoints, this._teamOneSets, this._teamTwoPoints,
-      this._teamTwoSets, this._maxPoints);
-
   //reseta pontuação
   void _resetPoints() {
     if (_teamOnePoints > 0 || _teamTwoPoints > 0) {

@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 
 class Configurations extends StatelessWidget {
   var dropdownValue = 0;
-  final void Function(int) _alterMaxPoints;
-
-  Configurations(this._alterMaxPoints, this.dropdownValue);
 
   @override
   Widget build(BuildContext context) {
