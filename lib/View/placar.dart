@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-
-enum Teams { team1, team2 }
+import 'package:provider/provider.dart';
+import 'package:yon_scoreboard/Controller/PlacarController.dart';
 
 class Placar extends StatefulWidget {
   const Placar({super.key});
@@ -13,7 +13,7 @@ class Placar extends StatefulWidget {
 
 class _PlacarState extends State<Placar> {
   //reseta pontuação
-  void _resetPoints() {
+  /*void _resetPoints() {
     if (_teamOnePoints > 0 || _teamTwoPoints > 0) {
       setState(() {
         _teamOnePoints = 0;
@@ -65,7 +65,7 @@ class _PlacarState extends State<Placar> {
         _teamTwoPoints = 0;
       });
     }
-  }
+  }*/
 
   //para ajustar o tamanho dos widgets
   double _screenPercentage(double screenWith) {
@@ -75,6 +75,8 @@ class _PlacarState extends State<Placar> {
 
   @override
   Widget build(BuildContext context) {
+    final placarController = context.watch<PlacarController>();
+
     final Size screenSize = MediaQuery.of(context).size;
     final double percentageAdjust = _screenPercentage(screenSize.width);
 
@@ -98,7 +100,7 @@ class _PlacarState extends State<Placar> {
                   //botao de mais do time 1
                   IconButton(
                     onPressed: () {
-                      _alterPoints(Teams.team1, 1);
+                      //_alterPoints(Teams.team1, 1);
                     },
                     iconSize: (50 * percentageAdjust),
                     color: Colors.green[900],
@@ -109,7 +111,7 @@ class _PlacarState extends State<Placar> {
                   //botao de menos do time 1
                   IconButton(
                     onPressed: () {
-                      _alterPoints(Teams.team1, -1);
+                      //_alterPoints(Teams.team1, -1);
                     },
                     iconSize: (50 * percentageAdjust),
                     color: Colors.red[900],
@@ -126,9 +128,9 @@ class _PlacarState extends State<Placar> {
             child: Container(
               alignment: Alignment.center,
               child: AutoSizeText(
-                _teamOnePoints < 10
-                    ? '0$_teamOnePoints'
-                    : _teamOnePoints.toString(),
+                placarController.teamOnePoints < 10
+                    ? '0$placarController.teamOnePoints'
+                    : placarController.teamOnePoints.toString(),
                 style: TextStyle(
                   fontSize: (210 * percentageAdjust),
                   color: Colors.white,
@@ -146,7 +148,7 @@ class _PlacarState extends State<Placar> {
               margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
               alignment: Alignment.topLeft,
               child: Text(
-                _teamOneSets.toString(),
+                placarController.teamOneSets.toString(),
                 style: TextStyle(
                   fontSize: (74 * percentageAdjust),
                   color: Colors.white,
@@ -161,7 +163,7 @@ class _PlacarState extends State<Placar> {
             child: Container(
               margin: EdgeInsets.fromLTRB(0, screenSize.height * 0.30, 0, 0),
               child: IconButton(
-                onPressed: _resetPoints,
+                onPressed: () {},
                 iconSize: (60 * percentageAdjust),
                 color: Colors.blue[900],
                 icon: const Icon(Icons.refresh_outlined),
@@ -177,7 +179,7 @@ class _PlacarState extends State<Placar> {
               margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
               alignment: Alignment.topRight,
               child: Text(
-                _teamTwoSets.toString(),
+                placarController.teamTwoSets.toString(),
                 style: TextStyle(
                   fontSize: (74 * percentageAdjust),
                   color: Colors.white,
@@ -192,9 +194,9 @@ class _PlacarState extends State<Placar> {
             child: Container(
               alignment: Alignment.center,
               child: AutoSizeText(
-                _teamTwoPoints < 10
-                    ? '0$_teamTwoPoints'
-                    : _teamTwoPoints.toString(),
+                placarController.teamTwoPoints < 10
+                    ? '0$placarController.teamTwoPoints'
+                    : placarController.teamTwoPoints.toString(),
                 style: TextStyle(
                   fontSize: (210 * percentageAdjust),
                   color: Colors.white,
@@ -215,7 +217,7 @@ class _PlacarState extends State<Placar> {
                   //botao de mais do time 2
                   IconButton(
                     onPressed: () {
-                      _alterPoints(Teams.team2, 1);
+                      //_alterPoints(Teams.team2, 1);
                     },
                     iconSize: (50 * percentageAdjust),
                     color: Colors.green[900],
@@ -224,7 +226,7 @@ class _PlacarState extends State<Placar> {
                   //botao de menos do time 2
                   IconButton(
                     onPressed: () {
-                      _alterPoints(Teams.team2, -1);
+                      //_alterPoints(Teams.team2, -1);
                     },
                     iconSize: (50 * percentageAdjust),
                     color: Colors.red[900],

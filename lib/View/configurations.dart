@@ -6,7 +6,7 @@ class Configurations extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+        /*appBar: AppBar(
         title: const Center(child: Text('Configurações')),
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4.0), // Altura da borda
@@ -72,7 +72,7 @@ class Configurations extends StatelessWidget {
           ),
         ],
       ),
-      backgroundColor: const Color.fromARGB(255, 11, 11, 11),
-    );
+      backgroundColor: const Color.fromARGB(255, 11, 11, 11),*/
+        );
   }
 }
