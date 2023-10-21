@@ -5,6 +5,9 @@ import 'package:yon_scoreboard/shared/enums.dart';
 class PlacarController extends ChangeNotifier {
   final PlacarModel _placarModel = PlacarModel();
 
+  ///Incrementa ou decrementa pontuação de algum dos times
+  /// - [team]: recebe um enumerado Teams: one, two
+  /// - [newPoint]: recebe um inteiro referente a pontuacao a ser adicionada
   void addTeamPoints(Teams team, int newPoint) {
     if (newPoint != 0) {
       switch (team) {
@@ -19,6 +22,8 @@ class PlacarController extends ChangeNotifier {
           break;
       }
 
+      //esses dois if's verificam se algum dos times
+      //alcancou a pontuacao maxima
       if (teamOnePoints == maxPoints) {
         _resetTeamOnePoints();
         _resetTeamTwoPoints();
@@ -36,6 +41,7 @@ class PlacarController extends ChangeNotifier {
     }
   }
 
+  ///Reseta a pontuacao de ambos os times
   void resetPoints() {
     _resetTeamOnePoints();
     _resetTeamTwoPoints();
@@ -49,9 +55,16 @@ class PlacarController extends ChangeNotifier {
     notifyListeners();
   }
 
+  ///retorna o valor da pontuação do time 1
   get teamOnePoints => _placarModel.teamOnePoints;
+
+  ///retorna o valor do set do time 1
   get teamOneSets => _placarModel.teamOneSets;
+
+  ///retorna o valor da pontuação do time 2
   get teamTwoPoints => _placarModel.teamTwoPoints;
+
+  ///retorna o valor do set do time 2
   get teamTwoSets => _placarModel.teamTwoSets;
 
   ///Retorna a pontuação maxima do placar
