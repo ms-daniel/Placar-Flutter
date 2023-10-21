@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 enum Teams { team1, team2 }
 
 class Placar extends StatefulWidget {
-  final _teamOnePoints, _teamTwoPoints, _teamOneSets, _teamTwoSets;
-  final _maxPoints;
+  final int _teamOnePoints, _teamTwoPoints, _teamOneSets, _teamTwoSets;
+  final int _maxPoints;
 
-  Placar(this._teamOnePoints, this._teamOneSets, this._teamTwoPoints,
-      this._teamTwoSets, this._maxPoints);
+  const Placar(this._teamOnePoints, this._teamOneSets, this._teamTwoPoints,
+      this._teamTwoSets, this._maxPoints,
+      {super.key});
 
   @override
   // ignore: no_logic_in_create_state
@@ -17,27 +18,26 @@ class Placar extends StatefulWidget {
 }
 
 class _PlacarState extends State<Placar> {
-  var _teamOnePoints, _teamTwoPoints, _teamOneSets, _teamTwoSets;
-  var _maxPoints;
+  int _teamOnePoints, _teamTwoPoints, _teamOneSets, _teamTwoSets;
+  final int _maxPoints;
 
   _PlacarState(this._teamOnePoints, this._teamOneSets, this._teamTwoPoints,
       this._teamTwoSets, this._maxPoints);
 
   //reseta pontuação
-  void _ResetPoints(){
-    if(_teamOnePoints > 0 || _teamTwoPoints > 0){
+  void _resetPoints() {
+    if (_teamOnePoints > 0 || _teamTwoPoints > 0) {
       setState(() {
         _teamOnePoints = 0;
         _teamTwoPoints = 0;
       });
-    }   
+    }
   }
 
   ///Incrementa pontuação de algum dos times.
   ///Teams team: recebe o enum referente ao time. team1, team2.
   ///int point: pontuação a ser incrementada/decrementada.
   void _alterPoints(Teams team, int point) {
-    
     switch (team) {
       case Teams.team1:
         if ((_teamOnePoints >= 0 && point > 0) ||
@@ -80,7 +80,7 @@ class _PlacarState extends State<Placar> {
   }
 
   //para ajustar o tamanho dos widgets
-  double _ScreenPercentage(double screenWith) {
+  double _screenPercentage(double screenWith) {
     //print ("taamnho da tela: $screenWith");
     return (screenWith / 850);
   }
@@ -88,7 +88,7 @@ class _PlacarState extends State<Placar> {
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
-    final double percentageAdjust = _ScreenPercentage(screenSize.width);
+    final double percentageAdjust = _screenPercentage(screenSize.width);
 
     //expanded para ocupar todo o restante da tela
     return Expanded(
@@ -103,7 +103,7 @@ class _PlacarState extends State<Placar> {
           Expanded(
             flex: 2,
             child: Container(
-              margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+              margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -139,7 +139,7 @@ class _PlacarState extends State<Placar> {
               alignment: Alignment.center,
               child: AutoSizeText(
                 _teamOnePoints < 10
-                    ? '0' + _teamOnePoints.toString()
+                    ? '0$_teamOnePoints'
                     : _teamOnePoints.toString(),
                 style: TextStyle(
                   fontSize: (210 * percentageAdjust),
@@ -155,7 +155,7 @@ class _PlacarState extends State<Placar> {
           Expanded(
             flex: 1,
             child: Container(
-              margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+              margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
               alignment: Alignment.topLeft,
               child: Text(
                 _teamOneSets.toString(),
@@ -173,7 +173,7 @@ class _PlacarState extends State<Placar> {
             child: Container(
               margin: EdgeInsets.fromLTRB(0, screenSize.height * 0.30, 0, 0),
               child: IconButton(
-                onPressed: _ResetPoints,
+                onPressed: _resetPoints,
                 iconSize: (60 * percentageAdjust),
                 color: Colors.blue[900],
                 icon: const Icon(Icons.refresh_outlined),
@@ -186,7 +186,7 @@ class _PlacarState extends State<Placar> {
           Expanded(
             flex: 1,
             child: Container(
-              margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+              margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
               alignment: Alignment.topRight,
               child: Text(
                 _teamTwoSets.toString(),
@@ -205,7 +205,7 @@ class _PlacarState extends State<Placar> {
               alignment: Alignment.center,
               child: AutoSizeText(
                 _teamTwoPoints < 10
-                    ? '0' + _teamTwoPoints.toString()
+                    ? '0$_teamTwoPoints'
                     : _teamTwoPoints.toString(),
                 style: TextStyle(
                   fontSize: (210 * percentageAdjust),
@@ -220,7 +220,7 @@ class _PlacarState extends State<Placar> {
           Expanded(
             flex: 2,
             child: Container(
-              margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+              margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

@@ -1,19 +1,38 @@
-import './BarraSuperiorPlacar.dart';
+import 'pages/BarraSuperiorPlacar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import './placar.dart';
+import 'pages/placar.dart';
 
 main() {
-  runApp(PlacarApp());
+  runApp(const PlacarApp());
+}
+
+class PlacarApp extends StatefulWidget {
+  const PlacarApp({super.key});
+
+  @override
+  _PlacarState createState() {
+    return _PlacarState();
+  }
 }
 
 class _PlacarState extends State<PlacarApp> {
   // ignore: unused_field
-  var _teamOnePoints = 0,
+  final _teamOnePoints = 0,
       _teamTwoPoints = 0,
       _teamOneSets = 0,
       _teamTwoSets = 0;
+
   var _maxPoints = 15;
+
+  void _alterMaxPoints(int value) {
+    setState(() {
+      if (value > 0) {
+        this._maxPoints = value;
+      }
+    });
+    print('pontaçai max: $_maxPoints');
+  }
 
   @override
   void initState() {
@@ -40,7 +59,7 @@ class _PlacarState extends State<PlacarApp> {
         ),*/
         body: Column(
           children: <Widget>[
-            BarraSuperiorPlacar(),
+            BarraSuperiorPlacar(_alterMaxPoints, _maxPoints),
             Placar(_teamOnePoints, _teamOneSets, _teamTwoPoints, _teamTwoSets,
                 _maxPoints),
           ],
@@ -48,14 +67,5 @@ class _PlacarState extends State<PlacarApp> {
         backgroundColor: Colors.black,
       ),
     );
-  }
-}
-
-class PlacarApp extends StatefulWidget {
-  const PlacarApp({super.key});
-
-  @override
-  _PlacarState createState() {
-    return _PlacarState();
   }
 }
