@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:yon_scoreboard/Controller/PlacarController.dart';
-import 'package:yon_scoreboard/Model/PlacarModel.dart';
 import 'package:yon_scoreboard/View/BarraSuperiorPlacar.dart';
 import 'package:yon_scoreboard/View/placar.dart';
 import 'package:provider/provider.dart';
