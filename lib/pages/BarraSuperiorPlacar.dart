@@ -6,7 +6,7 @@ class BarraSuperiorPlacar extends StatelessWidget {
   // ignore: non_constant_identifier_names
   void _OpenConfigurations(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => const Configurations(),
+      builder: (context) => Configurations(),
     ));
   }
 
