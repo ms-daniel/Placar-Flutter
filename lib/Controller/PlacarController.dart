@@ -36,6 +36,12 @@ class PlacarController extends ChangeNotifier {
     }
   }
 
+  void resetPoints() {
+    _resetTeamOnePoints();
+    _resetTeamTwoPoints();
+    notifyListeners();
+  }
+
   /// Alterar pontuacaoo maxima do placar:
   /// - [newPoints]: Inteiro contendo o novo valor
   set maxPoints(int newPoint) {

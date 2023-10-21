@@ -16,19 +16,28 @@ class PlacarModel {
 
   //set
   set teamOnePoints(int newPoint) =>
-      newPoint > 0 ? _teamOnePoints = newPoint : null;
+      newPoint >= 0 ? _teamOnePoints = newPoint : null;
+
   set teamOneSets(int newPoint) =>
-      newPoint > 0 ? _teamOneSets = newPoint : null;
+      newPoint >= 0 ? _teamOneSets = newPoint : null;
+
   set teamTwoPoints(int newPoint) =>
-      newPoint > 0 ? _teamTwoPoints = newPoint : null;
+      newPoint >= 0 ? _teamTwoPoints = newPoint : null;
+
   set teamTwoSets(int newPoint) =>
-      newPoint > 0 ? _teamTwoSets = newPoint : null;
+      newPoint >= 0 ? _teamTwoSets = newPoint : null;
+
   set maxPoints(int newPoint) => newPoint > 0 ? _maxPoints = newPoint : null;
 
   //singleton
   factory PlacarModel() {
     _instance ??=
         PlacarModel._internal(); //atribue apenas se _instance for null
+
+    if (_instance != null)
+      print(
+          'entrou aquiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+
     return _instance!;
   }
 
