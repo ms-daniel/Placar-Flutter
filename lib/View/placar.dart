@@ -109,7 +109,54 @@ class _PlacarState extends State<Placar> {
             child: Container(
               margin: EdgeInsets.fromLTRB(0, screenSize.height * 0.30, 0, 0),
               child: IconButton(
-                onPressed: placarController.resetPoints,
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const  Text("Confirmação"),
+                      //rich text para poder colocar uma cor a palavra pontuação
+                      content: RichText(
+                        text: TextSpan(
+                          text: "Tem certeza de que deseja resetar a ",
+                          style: DefaultTextStyle.of(context).style,
+                          children: const <TextSpan>[
+                            TextSpan(
+                              text: "PONTUAÇÃO",
+                              style: TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text: "?",
+                            ),
+                          ],
+                        ),
+                      ),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text("Cancelar",
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 102, 102, 102)
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop(); // Fecha o diálogo
+                          },
+                        ),
+                        TextButton(
+                          child: const Text("Sim"),
+                          onPressed: () {
+                            //caso confirme reset
+                            Navigator.of(context).pop(); // Fecha o diálogo
+                            placarController.resetPoints();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                ),
+                //placarController.resetPoints,
                 iconSize: (60 * percentageAdjust),
                 color: Colors.blue[900],
                 icon: const Icon(Icons.refresh_outlined),
