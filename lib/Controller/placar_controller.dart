@@ -41,9 +41,26 @@ class PlacarController extends ChangeNotifier {
     }
   }
 
+  void resetSets(){
+    if(teamOneSets > 0 || teamTwoSets > 0){
+      _resetTeamOneSets();
+      _resetTeamTwoSets();
+
+      _resetTeamOnePoints();
+      _resetTeamTwoPoints();
+
+      notifyListeners();
+    }
+    else{
+      //refatorar depois pra nao permitir chamar caso as
+      // duas equipes estejam com pontuacao zerada
+      resetPoints();
+    }
+  }
+
   ///Reseta a pontuacao de ambos os times
   void resetPoints() {
-    if (teamOnePoints > 0 && teamTwoPoints > 0) {
+    if (teamOnePoints > 0 || teamTwoPoints > 0) {
       _resetTeamOnePoints();
       _resetTeamTwoPoints();
       notifyListeners();
@@ -93,6 +110,12 @@ class PlacarController extends ChangeNotifier {
   ///reseta pontuacao do time 1
   void _resetTeamOnePoints() => _placarModel.teamOnePoints = 0;
 
+  ///reseta o set do time 1
+  void _resetTeamOneSets() => _placarModel.teamOneSets = 0;
+
   ///reseta pontuacao do time 2
   void _resetTeamTwoPoints() => _placarModel.teamTwoPoints = 0;
+
+  ///reseta o set do time 22
+  void _resetTeamTwoSets() => _placarModel.teamTwoSets = 0;
 }
