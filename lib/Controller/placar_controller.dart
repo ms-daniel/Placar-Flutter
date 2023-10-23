@@ -51,6 +51,11 @@ class PlacarController extends ChangeNotifier {
 
       notifyListeners();
     }
+    else{
+      //refatorar depois pra nao permitir chamar caso as
+      // duas equipes estejam com pontuacao zerada
+      resetPoints();
+    }
   }
 
   ///Reseta a pontuacao de ambos os times
