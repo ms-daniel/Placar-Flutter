@@ -48,14 +48,14 @@ class PlacarController extends ChangeNotifier {
 
       _resetTeamOnePoints();
       _resetTeamTwoPoints();
-      
+
       notifyListeners();
     }
   }
 
   ///Reseta a pontuacao de ambos os times
   void resetPoints() {
-    if (teamOnePoints > 0 && teamTwoPoints > 0) {
+    if (teamOnePoints > 0 || teamTwoPoints > 0) {
       _resetTeamOnePoints();
       _resetTeamTwoPoints();
       notifyListeners();
