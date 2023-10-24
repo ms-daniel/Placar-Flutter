@@ -24,13 +24,13 @@ class PlacarController extends ChangeNotifier {
 
       //esses dois if's verificam se algum dos times
       //alcancou a pontuacao maxima
-      if (teamOnePoints == maxPoints) {
+      if (teamOnePoints >= maxPoints && (teamOnePoints - teamTwoPoints) >= 2) {
         _resetTeamOnePoints();
         _resetTeamTwoPoints();
 
         _addTeamOneSet = 1;
       }
-      if (teamTwoPoints == maxPoints) {
+      else if (teamTwoPoints >= maxPoints && (teamTwoPoints - teamOnePoints) >= 2) {
         _resetTeamOnePoints();
         _resetTeamTwoPoints();
 
