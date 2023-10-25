@@ -70,7 +70,9 @@ class _PlacarState extends State<Placar> {
             ),
           ),
 
+          //time 1: pontos
           TeamPoints(placarController.teamOnePoints, percentageAdjust),
+          //time 1: sets
           TeamSets(placarController.teamOneSets, percentageAdjust),
 
           //botao de reset
@@ -139,40 +141,10 @@ class _PlacarState extends State<Placar> {
             ),
           ),
 
-          //digito de set do time 2
-          Expanded(
-            flex: 1,
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-              alignment: Alignment.topRight,
-              child: Text(
-                placarController.teamTwoSets.toString(),
-                style: TextStyle(
-                  fontSize: (74 * percentageAdjust),
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-
-          //pontos do time 2
-          Expanded(
-            flex: 4,
-            child: Container(
-              alignment: Alignment.center,
-              child: AutoSizeText(
-                placarController.teamTwoPoints < 10
-                    ? '0${placarController.teamTwoPoints}'
-                    : placarController.teamTwoPoints.toString(),
-                style: TextStyle(
-                  fontSize: (210 * percentageAdjust),
-                  color: Colors.white,
-                  decoration: TextDecoration.underline,
-                ),
-                maxLines: 1,
-              ),
-            ),
-          ),
+          //time 2: sets
+          TeamSets(placarController.teamTwoSets, percentageAdjust),
+          //time 2: pontos
+          TeamPoints(placarController.teamTwoPoints, percentageAdjust),
 
           Expanded(
             flex: 2,
