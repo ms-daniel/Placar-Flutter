@@ -82,7 +82,54 @@ class _PlacarState extends State<Placar> {
               margin: EdgeInsets.fromLTRB(0, screenSize.height * 0.30, 0, 0),
               //inkwell para adicionar long press
               child: InkWell(
-                onLongPress: placarController.resetSets,
+                onLongPress: () => showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const  Text("Confirmação"),
+                          //rich text para poder colocar uma cor a palavra pontuação
+                          content: RichText(
+                            text: TextSpan(
+                              text: "Tem certeza de que deseja resetar os ",
+                              style: DefaultTextStyle.of(context).style,
+                              children: const <TextSpan>[
+                                TextSpan(
+                                  text: "SETS",
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 199, 3, 3),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: "?",
+                                ),
+                              ],
+                            ),
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text("Cancelar",
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 102, 102, 102)
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Fecha o diálogo
+                              },
+                            ),
+                            TextButton(
+                              child: const Text("Sim"),
+                              onPressed: () {
+                                //caso confirme reset
+                                Navigator.of(context).pop(); // Fecha o diálogo
+                                placarController.resetSets();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                //placarController.resetSets,
                 child:IconButton(
                     onPressed: () => showDialog(
                       context: context,
