@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:yon_scoreboard/Controller/placar_controller.dart';
 import 'package:yon_scoreboard/shared/enums.dart';
 
+import '../shared/points_sets.dart';
+
 class Placar extends StatefulWidget {
   const Placar({super.key});
 
@@ -68,40 +70,8 @@ class _PlacarState extends State<Placar> {
             ),
           ),
 
-          //pontos do time 1
-          Expanded(
-            flex: 4,
-            child: Container(
-              alignment: Alignment.center,
-              child: AutoSizeText(
-                placarController.teamOnePoints < 10
-                    ? '0${placarController.teamOnePoints}'
-                    : placarController.teamOnePoints.toString(),
-                style: TextStyle(
-                  fontSize: (210 * percentageAdjust),
-                  color: Colors.white,
-                  decoration: TextDecoration.underline,
-                ),
-                maxLines: 1,
-              ),
-            ),
-          ),
-
-          //set time 1
-          Expanded(
-            flex: 1,
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-              alignment: Alignment.topLeft,
-              child: Text(
-                placarController.teamOneSets.toString(),
-                style: TextStyle(
-                  fontSize: (74 * percentageAdjust),
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
+          TeamPoints(placarController.teamOnePoints, percentageAdjust),
+          TeamSets(placarController.teamOneSets, percentageAdjust),
 
           //botao de reset
           Expanded(
