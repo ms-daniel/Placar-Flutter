@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:yon_scoreboard/Controller/placar_controller.dart';
 import 'package:yon_scoreboard/shared/enums.dart';
 
+import '../shared/points_sets.dart';
+
 class Placar extends StatefulWidget {
   const Placar({super.key});
 
@@ -68,40 +70,10 @@ class _PlacarState extends State<Placar> {
             ),
           ),
 
-          //pontos do time 1
-          Expanded(
-            flex: 4,
-            child: Container(
-              alignment: Alignment.center,
-              child: AutoSizeText(
-                placarController.teamOnePoints < 10
-                    ? '0${placarController.teamOnePoints}'
-                    : placarController.teamOnePoints.toString(),
-                style: TextStyle(
-                  fontSize: (210 * percentageAdjust),
-                  color: Colors.white,
-                  decoration: TextDecoration.underline,
-                ),
-                maxLines: 1,
-              ),
-            ),
-          ),
-
-          //set time 1
-          Expanded(
-            flex: 1,
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-              alignment: Alignment.topLeft,
-              child: Text(
-                placarController.teamOneSets.toString(),
-                style: TextStyle(
-                  fontSize: (74 * percentageAdjust),
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
+          //time 1: pontos
+          TeamPoints(placarController.teamOnePoints, percentageAdjust),
+          //time 1: sets
+          TeamSets(placarController.teamOneSets, percentageAdjust),
 
           //botao de reset
           Expanded(
@@ -110,7 +82,54 @@ class _PlacarState extends State<Placar> {
               margin: EdgeInsets.fromLTRB(0, screenSize.height * 0.30, 0, 0),
               //inkwell para adicionar long press
               child: InkWell(
-                onLongPress: placarController.resetSets,
+                onLongPress: () => showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const  Text("Confirmação"),
+                          //rich text para poder colocar uma cor a palavra pontuação
+                          content: RichText(
+                            text: TextSpan(
+                              text: "Tem certeza de que deseja resetar os ",
+                              style: DefaultTextStyle.of(context).style,
+                              children: const <TextSpan>[
+                                TextSpan(
+                                  text: "SETS",
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 199, 3, 3),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: "?",
+                                ),
+                              ],
+                            ),
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              child: const Text("Cancelar",
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 102, 102, 102)
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Fecha o diálogo
+                              },
+                            ),
+                            TextButton(
+                              child: const Text("Sim"),
+                              onPressed: () {
+                                //caso confirme reset
+                                Navigator.of(context).pop(); // Fecha o diálogo
+                                placarController.resetSets();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                //placarController.resetSets,
                 child:IconButton(
                     onPressed: () => showDialog(
                       context: context,
@@ -169,40 +188,10 @@ class _PlacarState extends State<Placar> {
             ),
           ),
 
-          //digito de set do time 2
-          Expanded(
-            flex: 1,
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-              alignment: Alignment.topRight,
-              child: Text(
-                placarController.teamTwoSets.toString(),
-                style: TextStyle(
-                  fontSize: (74 * percentageAdjust),
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ),
-
-          //pontos do time 2
-          Expanded(
-            flex: 4,
-            child: Container(
-              alignment: Alignment.center,
-              child: AutoSizeText(
-                placarController.teamTwoPoints < 10
-                    ? '0${placarController.teamTwoPoints}'
-                    : placarController.teamTwoPoints.toString(),
-                style: TextStyle(
-                  fontSize: (210 * percentageAdjust),
-                  color: Colors.white,
-                  decoration: TextDecoration.underline,
-                ),
-                maxLines: 1,
-              ),
-            ),
-          ),
+          //time 2: sets
+          TeamSets(placarController.teamTwoSets, percentageAdjust),
+          //time 2: pontos
+          TeamPoints(placarController.teamTwoPoints, percentageAdjust),
 
           Expanded(
             flex: 2,
