@@ -21,7 +21,7 @@ class BluetoothOff extends StatelessWidget {
   Widget buildTitle(BuildContext context) {
     String? state = adapterState?.toString().split(".").last;
     return Text(
-      'Função Bluetooth ${state != null ? state : 'não disponível'}',
+      'Função Bluetooth ${state != null ? 'ativada' : 'não disponível'}',
       style: Theme.of(context).primaryTextTheme.titleSmall?.copyWith(color: Colors.white),
     );
   }
