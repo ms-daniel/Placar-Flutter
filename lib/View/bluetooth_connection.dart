@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:yon_scoreboard/Controller/bluetooth_controller.dart';
@@ -36,7 +38,34 @@ class _BluetoothMainState extends State<BluetoothMain> {
 
     return MaterialApp(
       home: screen,
-      navigatorObservers: [],
+      navigatorObservers: [BluetoothAdapterStateObserver()],
     );
+  }
+}
+
+
+class BluetoothAdapterStateObserver extends NavigatorObserver {
+  StreamSubscription<BluetoothAdapterState>? _adapterStateSubscription;
+
+  @override
+  void didPush(Route route, Route? previousRoute) {
+    super.didPush(route, previousRoute);
+    if (route.settings.name == '/DeviceScreen') {
+      // Começa a ouvir o estado do bluetooth quando muda para uma nova rota/tela
+      _adapterStateSubscription ??= FlutterBluePlus.adapterState.listen((state) {
+        if (state != BluetoothAdapterState.on) {
+          // Desempilha a rota atual caso desligue o bluetooth
+          navigator?.pop();
+        }
+      });
+    }
+  }
+
+  @override
+  void didPop(Route route, Route? previousRoute) {
+    super.didPop(route, previousRoute);
+    // Cancela a inscrição quando a rota é removida da pilha
+    _adapterStateSubscription?.cancel();
+    _adapterStateSubscription = null;
   }
 }
