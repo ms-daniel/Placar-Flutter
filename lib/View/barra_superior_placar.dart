@@ -12,6 +12,10 @@ class BarraSuperiorPlacar extends StatelessWidget {
     ));
   }
 
+  void_OpenBluetooth(BuildContext context){
+    //TODO
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
