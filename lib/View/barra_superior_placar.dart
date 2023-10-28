@@ -1,19 +1,52 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:yon_scoreboard/View/configurations.dart';
 
-class BarraSuperiorPlacar extends StatelessWidget {
-  const BarraSuperiorPlacar({super.key});
+class BarraSuperiorPlacar extends StatefulWidget {
 
+  BarraSuperiorPlacar({super.key});
+
+  @override
+  State<BarraSuperiorPlacar> createState() => _BarraSuperiorPlacarState();
+}
+
+class _BarraSuperiorPlacarState extends State<BarraSuperiorPlacar> {
+  //estado do bluetooth
+  BluetoothAdapterState _adapterState = BluetoothAdapterState.unknown;
+  late StreamSubscription<BluetoothAdapterState> _adapterStateStateSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _adapterStateStateSubscription = FlutterBluePlus.adapterState.listen((state) {
+      _adapterState = state;
+      setState(() {});
+    });
+  }
+  
   //empilhar tela de configuração na tela atual
-  // ignore: non_constant_identifier_names
   void _OpenConfigurations(BuildContext context) {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => const Configurations(),
     ));
   }
 
-  void_OpenBluetooth(BuildContext context){
+  void _OpenBluetooth(BuildContext context){
     //TODO
+  }
+
+  Widget _ConnectedDisconnectedButton(){
+    return TextButton(
+      onPressed: () {},
+      child: Text(
+        _adapterState == BluetoothAdapterState.on ? 'Conectado' : 'Disconectado',
+        style: TextStyle(
+          color: _adapterState == BluetoothAdapterState.on ? Colors.green[900] : Colors.red[900],
+        ),
+      ),
+    );
   }
 
   @override
@@ -33,15 +66,8 @@ class BarraSuperiorPlacar extends StatelessWidget {
         SizedBox(
           width: 200, // Largura da segunda coluna
           //color: Colors.red[400], // Cor de fundo
-          child: Text(
-            'Disconnected',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.red[400],
-              fontSize: 18,
-            ),
+          child: _ConnectedDisconnectedButton(),
           ),
-        ),
         SizedBox(
           child: IconButton(
             onPressed: () {
