@@ -53,7 +53,7 @@ class _BarraSuperiorPlacarState extends State<BarraSuperiorPlacar> {
         _openBluetooth();
       },
       child: Text(
-        _adapterState == BluetoothAdapterState.on ? 'Conectado' : 'Disconectado',
+        _adapterState == BluetoothAdapterState.on ? 'Conectado' : 'Desconectado',
         style: TextStyle(
           color: _adapterState == BluetoothAdapterState.on ? Colors.green[900] : Colors.red[900],
         ),
