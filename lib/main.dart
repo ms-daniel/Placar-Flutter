@@ -46,12 +46,12 @@ class _PlacarState extends State<PlacarApp> {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       home: Scaffold(
         body: Column(
           children: <Widget>[
             BarraSuperiorPlacar(),
-            Placar(),
+            const Placar(),
           ],
         ),
         backgroundColor: Colors.black,
