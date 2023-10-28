@@ -16,11 +16,18 @@ class _BluetoothMainState extends State<BluetoothMain> {
   void initState(){
     super.initState();
 
+    //inscrição para ouvir mudança de estado no hardware do bluetooth
     _bluetoothController.adapterStateStateSubscription = FlutterBluePlus.adapterState.listen((state) {
       _bluetoothController.adapterState = state;
       setState(() {});
     });
+  }
 
+   @override
+  void dispose() {
+    //cancelar inscrição no fluxo qnd flechar esta tela
+    _bluetoothController.adapterStateStateSubscription.cancel();
+    super.dispose();
   }
 
   @override

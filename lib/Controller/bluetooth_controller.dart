@@ -23,6 +23,8 @@ class BluetoothController extends ChangeNotifier {
   BluetoothAdapterState get adapterState{
     return _adapterState;
   }
+
+  StreamSubscription<BluetoothAdapterState> get adapterStateStateSubscription => _adapterStateStateSubscription;
   set adapterState(BluetoothAdapterState state) => _adapterState = state;
 
   //get adapterStateStateSubscription => _adapterStateStateSubscription;
