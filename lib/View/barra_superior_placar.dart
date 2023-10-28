@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:yon_scoreboard/View/configurations.dart';
 
+import 'bluetooth_connection.dart';
+
 class BarraSuperiorPlacar extends StatefulWidget {
 
   BarraSuperiorPlacar({super.key});
@@ -25,21 +27,31 @@ class _BarraSuperiorPlacarState extends State<BarraSuperiorPlacar> {
       setState(() {});
     });
   }
+
+  @override
+  void dispose(){
+    _adapterStateStateSubscription.cancel();
+    super.dispose();
+  }
   
   //empilhar tela de configuração na tela atual
-  void _OpenConfigurations(BuildContext context) {
+  void _openConfigurations() {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => const Configurations(),
     ));
   }
 
-  void _OpenBluetooth(BuildContext context){
-    //TODO
+  void _openBluetooth(){
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => const BluetoothMain(),
+    ));
   }
 
-  Widget _ConnectedDisconnectedButton(){
+  Widget _connectedDisconnectedButton(){
     return TextButton(
-      onPressed: () {},
+      onPressed: () {
+        _openBluetooth();
+      },
       child: Text(
         _adapterState == BluetoothAdapterState.on ? 'Conectado' : 'Disconectado',
         style: TextStyle(
@@ -66,13 +78,11 @@ class _BarraSuperiorPlacarState extends State<BarraSuperiorPlacar> {
         SizedBox(
           width: 200, // Largura da segunda coluna
           //color: Colors.red[400], // Cor de fundo
-          child: _ConnectedDisconnectedButton(),
+          child: _connectedDisconnectedButton(),
           ),
         SizedBox(
           child: IconButton(
-            onPressed: () {
-              _OpenConfigurations(context);
-            },
+            onPressed:_openConfigurations,
             color: Colors.white,
             icon: const Icon(Icons.settings), // Ícone de voltar
           ),
