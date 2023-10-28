@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:yon_scoreboard/Controller/bluetooth_controller.dart';
 
+import 'Bluetooth/bluetooth_off.dart';
+
 class BluetoothMain extends StatefulWidget {
   const BluetoothMain({super.key});
 
@@ -34,18 +36,19 @@ class _BluetoothMainState extends State<BluetoothMain> {
 
   @override
   Widget build(BuildContext context) {
-    Widget? screen;
+    Widget? screen = _bluetoothController.adapterState == BluetoothAdapterState.off ? BluetoothOff(adapterState: _bluetoothController.adapterState) : null;
 
     return MaterialApp(
+      color: Colors.lightBlue,
       home: screen,
-      navigatorObservers: [BluetoothAdapterStateObserver()],
+      //navigatorObservers: [BluetoothAdapterStateObserver()],
     );
   }
 }
 
 
 class BluetoothAdapterStateObserver extends NavigatorObserver {
-  StreamSubscription<BluetoothAdapterState>? _adapterStateSubscription;
+  /*StreamSubscription<BluetoothAdapterState>? _adapterStateSubscription;
 
   @override
   void didPush(Route route, Route? previousRoute) {
@@ -67,5 +70,5 @@ class BluetoothAdapterStateObserver extends NavigatorObserver {
     // Cancela a inscrição quando a rota é removida da pilha
     _adapterStateSubscription?.cancel();
     _adapterStateSubscription = null;
-  }
+  }*/
 }
