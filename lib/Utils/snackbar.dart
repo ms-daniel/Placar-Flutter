@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
+//todos os creditos e direitos reservados a flutter_blue_plus
+//este arquivo foi retirado do exemplo deles
+
 enum ABC {
   a,
   b,
