@@ -39,7 +39,7 @@ class _BluetoothMainState extends State<BluetoothMain> {
     Widget? screen = _bluetoothController.adapterState == BluetoothAdapterState.off ? BluetoothOff(adapterState: _bluetoothController.adapterState) : null;
 
     return MaterialApp(
-      color: Colors.lightBlue,
+      color: Colors.black,
       home: screen,
       //navigatorObservers: [BluetoothAdapterStateObserver()],
     );
