@@ -14,14 +14,14 @@ class BluetoothOff extends StatelessWidget {
     return const Icon(
       Icons.bluetooth_disabled,
       size: 200.0,
-      color: Colors.white54,
+      color: Color.fromARGB(137, 255, 255, 255),
     );
   }
 
   Widget buildTitle(BuildContext context) {
     String? state = adapterState?.toString().split(".").last;
     return Text(
-      'Função Bluetooth ${state != null ? 'ativada' : 'não disponível'}',
+      'Função Bluetooth ${state == 'on' ? 'ativada' : 'não ativada'}',
       style: Theme.of(context).primaryTextTheme.titleSmall?.copyWith(color: Colors.white),
     );
   }
@@ -30,7 +30,11 @@ class BluetoothOff extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: ElevatedButton(
-        child: const Text('Ligar'),
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all(Colors.lightBlue),
+          shadowColor: MaterialStateProperty.all(Color.fromARGB(255, 0, 67, 143)),
+          padding: MaterialStateProperty.all(const EdgeInsets.fromLTRB(40,0,40,0)), // Aumenta o tamanho do botão
+        ),
         onPressed: () async {
           try {
             if (Platform.isAndroid) {
@@ -40,6 +44,7 @@ class BluetoothOff extends StatelessWidget {
             Snackbar.show(ABC.a, prettyException("Erro ao tentar ligar: ", e), success: false);
           }
         },
+        child: const Text('Ligar'),
       ),
     );
   }
@@ -49,7 +54,7 @@ class BluetoothOff extends StatelessWidget {
     return ScaffoldMessenger(
       key: Snackbar.snackBarKeyA,
       child: Scaffold(
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
         body: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
