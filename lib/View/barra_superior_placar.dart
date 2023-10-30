@@ -19,6 +19,9 @@ class _BarraSuperiorPlacarState extends State<BarraSuperiorPlacar> {
   BluetoothAdapterState _adapterState = BluetoothAdapterState.unknown;
   late StreamSubscription<BluetoothAdapterState> _adapterStateStateSubscription;
 
+  /*BluetoothConnectionState _connectionState = BluetoothConnectionState.disconnected;
+  late StreamSubscription<BluetoothConnectionState> _connectionStateStateSubscription;*/
+
   @override
   void initState() {
     super.initState();
@@ -53,7 +56,8 @@ class _BarraSuperiorPlacarState extends State<BarraSuperiorPlacar> {
         _openBluetooth();
       },
       child: Text(
-        _adapterState == BluetoothAdapterState.on ? 'Conectado' : 'Desconectado',
+        //alterar estado qnd conectar em um dispositivo
+        _adapterState == BluetoothAdapterState.on ? 'Desconectado | On' : 'Desconectado | Off',
         style: TextStyle(
           color: _adapterState == BluetoothAdapterState.on ? Colors.green[900] : Colors.red[900],
         ),
