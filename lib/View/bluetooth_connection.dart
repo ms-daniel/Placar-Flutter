@@ -5,6 +5,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:yon_scoreboard/Controller/bluetooth_controller.dart';
 
 import 'Bluetooth/bluetooth_off.dart';
+import 'Bluetooth/scan_connect.dart';
 
 class BluetoothMain extends StatefulWidget {
   const BluetoothMain({super.key});
@@ -36,7 +37,7 @@ class _BluetoothMainState extends State<BluetoothMain> {
 
   @override
   Widget build(BuildContext context) {
-    Widget? screen = _bluetoothController.adapterState == BluetoothAdapterState.off ? BluetoothOff(adapterState: _bluetoothController.adapterState) : null;
+    Widget? screen = _bluetoothController.adapterState == BluetoothAdapterState.off ? BluetoothOff(adapterState: _bluetoothController.adapterState) : ScanScreen();
 
     return MaterialApp(
       color: Colors.black,

@@ -3,9 +3,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:yon_scoreboard/Utils/extra.dart';
+import 'package:yon_scoreboard/View/placar.dart';
+import 'package:yon_scoreboard/main.dart';
 
 import '../../Controller/bluetooth_controller.dart';
 import '../../Utils/snackbar.dart';
+import 'connected_device_tile.dart';
+import 'scan_result_tile.dart';
 
 class ScanScreen extends StatefulWidget {
   const ScanScreen({super.key});
@@ -76,8 +81,90 @@ class _ScanScreenState extends State<ScanScreen> {
     }
   }
 
+  //dispositivos conectados
+  List<Widget> _buildConnectedDeviceTiles(BuildContext context) {
+    return _bluetoothController.connectedDevices
+        .map(
+          (d) => ConnectedDeviceTile(
+            device: d,
+            /*onOpen: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => DeviceScreen(device: d),
+                settings: RouteSettings(name: '/DeviceScreen'),
+              ),
+            ),*/
+            onOpen: () => {},
+            onConnect: () => onConnectPressed(d),
+          ),
+        )
+        .toList();
+  } // nao coloquei esse 
+
+   void onConnectPressed(BluetoothDevice device) {
+    device.connectAndUpdateStream().catchError((e) {
+      Snackbar.show(ABC.c, prettyException("Connect Error:", e), success: false);
+    });
+    /*MaterialPageRoute route = MaterialPageRoute(
+        builder: (context) => DeviceScreen(device: device), settings: RouteSettings(name: '/DeviceScreen'));*/
+    //Navigator.of(context).pop();
+    Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => PlacarApp()),
+              (Route<dynamic> route) => false,
+            );
+  }
+
+  Future onRefresh() {
+    if (_isScanning == false) {
+      FlutterBluePlus.startScan(timeout: const Duration(seconds: 15));
+    }
+    setState(() {});
+    return Future.delayed(Duration(milliseconds: 500));
+  }
+
+  Widget buildScanButton(BuildContext context) {
+    if (FlutterBluePlus.isScanningNow) {
+      return FloatingActionButton(
+        child: const Icon(Icons.stop),
+        onPressed: onStopPressed,
+        backgroundColor: Colors.red,
+      );
+    } else {
+      return FloatingActionButton(child: const Text("SCAN"), onPressed: onScanPressed);
+    }
+  }
+
+  List<Widget> _buildScanResultTiles(BuildContext context) {
+    return _bluetoothController.scanResults
+        .map(
+          (r) => ScanResultTile(
+            result: r,
+            onTap: () => onConnectPressed(r.device),
+          ),
+        )
+        .toList();
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return ScaffoldMessenger(
+      key: Snackbar.snackBarKeyB,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Find Devices'),
+        ),
+        body: RefreshIndicator(
+          onRefresh: onRefresh,
+          child: ListView(
+            children: <Widget>[
+              ..._buildConnectedDeviceTiles(context),
+              ..._buildScanResultTiles(context),
+            ],
+          ),
+        ),
+        floatingActionButton: buildScanButton(context),
+      ),
+    );
   }
 }

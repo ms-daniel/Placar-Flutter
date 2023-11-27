@@ -38,9 +38,12 @@ class BluetoothController extends ChangeNotifier {
   set connectedDevices(List<BluetoothDevice> devices) =>
       _connectedDevices = devices;
 
+  List<BluetoothDevice> get connectedDevices => _connectedDevices;
+
   //resultado da varredura
   List<ScanResult> _scanResults = [];
   set scanResults(List<ScanResult> results) => _scanResults = results;
+  List<ScanResult> get scanResults => _scanResults;
 
   //estado da conexao
   BluetoothConnectionState _connectionState =
