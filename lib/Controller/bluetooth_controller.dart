@@ -15,6 +15,11 @@ class BluetoothController extends ChangeNotifier {
   }
   //END SINGLETON
 
+  //device conectado ao app
+  late BluetoothDevice _deviceConnected;
+  set deviceConnected(BluetoothDevice device) => _deviceConnected = device;
+  BluetoothDevice get deviceConnected => _deviceConnected;
+
   //estado do bluetooth
   BluetoothAdapterState _adapterState = BluetoothAdapterState.unknown;
   late StreamSubscription<BluetoothAdapterState> _adapterStateStateSubscription;
