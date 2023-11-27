@@ -93,14 +93,25 @@ class _ScanScreenState extends State<ScanScreen> {
                 settings: RouteSettings(name: '/DeviceScreen'),
               ),
             ),*/
-            onOpen: () => {},
+            onDisconnect: () => {
+
+            },
             onConnect: () => onConnectPressed(d),
           ),
         )
         .toList();
-  } // nao coloquei esse 
+  }
 
    void onConnectPressed(BluetoothDevice device) {
+    //disconectada do dispositivo em qque estava conectado
+    //caso ele seja diferente do atual
+    if(_bluetoothController.deviceConnected != device){
+      _bluetoothController.deviceConnected.disconnect();
+    }
+
+    _bluetoothController.deviceConnected = device;  
+    
+
     device.connectAndUpdateStream().catchError((e) {
       Snackbar.show(ABC.c, prettyException("Connect Error:", e), success: false);
     });
@@ -111,6 +122,10 @@ class _ScanScreenState extends State<ScanScreen> {
               MaterialPageRoute(builder: (context) => PlacarApp()),
               (Route<dynamic> route) => false,
             );
+  }
+
+  void onDisconnectPressed(BluetoothDevice device){
+    device.disconnect();
   }
 
   Future onRefresh() {
