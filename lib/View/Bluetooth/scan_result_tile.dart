@@ -70,7 +70,7 @@ class _ScanResultTileState extends State<ScanResultTile> {
           Text(
             widget.result.device.remoteId.toString(),
             style: Theme.of(context).textTheme.bodySmall,
-          )
+          ),
         ],
       );
     } else {
@@ -114,21 +114,32 @@ class _ScanResultTileState extends State<ScanResultTile> {
   @override
   Widget build(BuildContext context) {
     var adv = widget.result.advertisementData;
-    return ExpansionTile(
-      title: _buildTitle(context),
-      leading: Text(widget.result.rssi.toString()),
-      trailing: _buildConnectButton(context),
-      children: <Widget>[
-        if (adv.advName.isNotEmpty)
-          _buildAdvRow(context, 'Name', adv.advName),
-        if (adv.txPowerLevel != null)
-          _buildAdvRow(context, 'Tx Power Level', '${adv.txPowerLevel}'),
-        if (adv.manufacturerData.isNotEmpty)
-          _buildAdvRow(context, 'Manufacturer Data', getNiceManufacturerData(adv.manufacturerData)),
-        if (adv.serviceUuids.isNotEmpty)
-          _buildAdvRow(context, 'Service UUIDs', getNiceServiceUuids(adv.serviceUuids)),
-        if (adv.serviceData.isNotEmpty)
-          _buildAdvRow(context, 'Service Data', getNiceServiceData(adv.serviceData)),
+    return Column(
+      children: [
+        ExpansionTile(
+          title: _buildTitle(context),
+          leading: Text(widget.result.rssi.toString()),
+          trailing: _buildConnectButton(context),
+          children: <Widget>[
+            if (adv.advName.isNotEmpty)
+              _buildAdvRow(context, 'Name', adv.advName),
+            if (adv.txPowerLevel != null)
+              _buildAdvRow(context, 'Tx Power Level', '${adv.txPowerLevel}'),
+            if (adv.manufacturerData.isNotEmpty)
+              _buildAdvRow(context, 'Manufacturer Data', getNiceManufacturerData(adv.manufacturerData)),
+            if (adv.serviceUuids.isNotEmpty)
+              _buildAdvRow(context, 'Service UUIDs', getNiceServiceUuids(adv.serviceUuids)),
+            if (adv.serviceData.isNotEmpty)
+              _buildAdvRow(context, 'Service Data', getNiceServiceData(adv.serviceData)),
+          ],
+        ),
+        const Divider(
+            height: 5,
+            thickness: 1,
+            indent: 5,
+            endIndent: 5,
+            color: Color.fromARGB(255, 145, 145, 145),
+          ),
       ],
     );
   }

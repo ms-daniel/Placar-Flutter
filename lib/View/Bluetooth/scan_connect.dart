@@ -152,12 +152,28 @@ class _ScanScreenState extends State<ScanScreen> {
       key: Snackbar.snackBarKeyB,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Find Devices'),
+          backgroundColor: Color.fromARGB(255, 68, 102, 136),
+          title: const Center(
+            child:
+              Text(
+                'Find Devices',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  fontSize: 28,
+                ),
+              ),
+          ),
         ),
         body: RefreshIndicator(
           onRefresh: onRefresh,
           child: ListView(
             children: <Widget>[
+              const Divider(
+                height: 3,
+                thickness: 3,
+                color: Colors.black,
+              ),
               ..._buildConnectedDeviceTiles(context),
               ..._buildScanResultTiles(context),
             ],
