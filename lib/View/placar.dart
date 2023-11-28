@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:yon_scoreboard/Controller/bluetooth_controller.dart';
 import 'package:yon_scoreboard/Controller/placar_controller.dart';
 import 'package:yon_scoreboard/shared/enums.dart';
 
@@ -14,6 +15,8 @@ class Placar extends StatefulWidget {
 }
 
 class _PlacarState extends State<Placar> {
+  BluetoothController _bluetoothController = BluetoothController();
+  
   //para ajustar o tamanho dos widgets
   double _screenPercentage(double screenWith) {
     //print ("taamnho da tela: $screenWith");
