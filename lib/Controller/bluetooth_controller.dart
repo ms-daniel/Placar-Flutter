@@ -25,6 +25,20 @@ class BluetoothController extends ChangeNotifier {
   set deviceState (StreamSubscription<BluetoothConnectionState> state) => _deviceState = state;
   StreamSubscription<BluetoothConnectionState> get deviceState => _deviceState;
 
+  //sinal do bluetooth
+  int _rssi = 999; //999 ao inves de null
+  set rssi(int rssi) => _rssi = rssi;
+  int get rssi => _rssi;
+
+  //tamanho do mtu
+  //int? _mtuSize;
+
+  //servicos disponibilizados pela conexao
+  List<BluetoothService> _services = [];
+
+  set services(List<BluetoothService> services) => _services = services;
+  List<BluetoothService> get services => _services;
+
   //estado do bluetooth
   BluetoothAdapterState _adapterState = BluetoothAdapterState.unknown;
   late StreamSubscription<BluetoothAdapterState> _adapterStateStateSubscription;
@@ -61,8 +75,7 @@ class BluetoothController extends ChangeNotifier {
   late StreamSubscription<BluetoothConnectionState>
       _connectionStateSubscription;
 
-  //servicos disponibilizados pela conexao
-  List<BluetoothService> _services = [];
+  
 
   //verificar uso
   bool _isDiscoveringServices = false;

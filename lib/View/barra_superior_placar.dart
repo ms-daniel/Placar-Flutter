@@ -44,11 +44,15 @@ class _BarraSuperiorPlacarState extends State<BarraSuperiorPlacar> {
     try{
       //verifica se dispositivo esta conectado
        _bluetoothController.deviceState = _bluetoothController.deviceConnected.connectionState.listen((BluetoothConnectionState state) async {
-          if (state == BluetoothConnectionState.disconnected) {
-              _deviceState = BluetoothConnectionState.disconnected;
-          }else{
-            _deviceState = BluetoothConnectionState.connected;
+          _deviceState = state;
+
+          if (state == BluetoothConnectionState.connected) {
+            _bluetoothController.services = []; // must rediscover services
           }
+          if (state == BluetoothConnectionState.connected && _bluetoothController.rssi == 999) {
+            _bluetoothController.rssi = await _bluetoothController.deviceConnected.readRssi();
+          }
+
           setState(() {
             
           });

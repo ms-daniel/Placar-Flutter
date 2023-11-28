@@ -117,7 +117,12 @@ class _ScanScreenState extends State<ScanScreen> {
   }
 
   Future<void> onDisconnectPressed(BluetoothDevice device) async {
-    await device.disconnect();
+    try{
+      await device.disconnectAndUpdateStream();
+      Snackbar.show(ABC.c, "Cancel: Success", success: true);
+    } catch (e) {
+      Snackbar.show(ABC.c, prettyException("Cancel Error:", e), success: false);
+    }
   }
 
   Future onRefresh() {
