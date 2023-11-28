@@ -20,6 +20,11 @@ class BluetoothController extends ChangeNotifier {
   set deviceConnected(BluetoothDevice device) => _deviceConnected = device;
   BluetoothDevice get deviceConnected => _deviceConnected;
 
+  //ouvir se o device foi disconectado
+  late StreamSubscription<BluetoothConnectionState> _deviceState;
+  set deviceState (StreamSubscription<BluetoothConnectionState> state) => _deviceState = state;
+  StreamSubscription<BluetoothConnectionState> get deviceState => _deviceState;
+
   //estado do bluetooth
   BluetoothAdapterState _adapterState = BluetoothAdapterState.unknown;
   late StreamSubscription<BluetoothAdapterState> _adapterStateStateSubscription;
