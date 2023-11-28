@@ -7,12 +7,12 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class ConnectedDeviceTile extends StatefulWidget {
   final BluetoothDevice device;
-  final VoidCallback onOpen;
+  final VoidCallback onDisconnect;
   final VoidCallback onConnect;
 
   const ConnectedDeviceTile({
     required this.device,
-    required this.onOpen,
+    required this.onDisconnect,
     required this.onConnect,
     Key? key,
   }) : super(key: key);
@@ -54,7 +54,7 @@ class _ConnectedDeviceTileState extends State<ConnectedDeviceTile> {
       subtitle: Text(widget.device.remoteId.toString()),
       trailing: ElevatedButton(
         child: isConnected ? const Text('DISCONNECT') : const Text('CONNECT'),
-        onPressed: isConnected ? widget.onOpen : widget.onConnect,
+        onPressed: isConnected ? widget.onDisconnect : widget.onConnect,
       ),
     );
   }
