@@ -93,9 +93,7 @@ class _ScanScreenState extends State<ScanScreen> {
                 settings: RouteSettings(name: '/DeviceScreen'),
               ),
             ),*/
-            onDisconnect: () => {
-
-            },
+            onDisconnect: () => onDisconnectPressed(d),
             onConnect: () => onConnectPressed(d),
           ),
         )
@@ -103,12 +101,6 @@ class _ScanScreenState extends State<ScanScreen> {
   }
 
    void onConnectPressed(BluetoothDevice device) {
-    //disconectada do dispositivo em qque estava conectado
-    //caso ele seja diferente do atual
-    if(_bluetoothController.deviceConnected != device){
-      _bluetoothController.deviceConnected.disconnect();
-    }
-
     _bluetoothController.deviceConnected = device;  
     
 
@@ -124,8 +116,8 @@ class _ScanScreenState extends State<ScanScreen> {
             );
   }
 
-  void onDisconnectPressed(BluetoothDevice device){
-    device.disconnect();
+  Future<void> onDisconnectPressed(BluetoothDevice device) async {
+    await device.disconnect();
   }
 
   Future onRefresh() {
