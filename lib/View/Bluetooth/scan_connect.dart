@@ -87,12 +87,6 @@ class _ScanScreenState extends State<ScanScreen> {
         .map(
           (d) => ConnectedDeviceTile(
             device: d,
-            /*onOpen: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => DeviceScreen(device: d),
-                settings: RouteSettings(name: '/DeviceScreen'),
-              ),
-            ),*/
             onDisconnect: () => onDisconnectPressed(d),
             onConnect: () => onConnectPressed(d),
           ),
@@ -105,11 +99,9 @@ class _ScanScreenState extends State<ScanScreen> {
     
 
     device.connectAndUpdateStream().catchError((e) {
-      Snackbar.show(ABC.c, prettyException("Connect Error:", e), success: false);
+      Snackbar.show(ABC.a, prettyException("Connect Error:", e), success: false);
     });
-    /*MaterialPageRoute route = MaterialPageRoute(
-        builder: (context) => DeviceScreen(device: device), settings: RouteSettings(name: '/DeviceScreen'));*/
-    //Navigator.of(context).pop();
+
     Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(builder: (context) => PlacarApp()),
               (Route<dynamic> route) => false,
@@ -119,9 +111,9 @@ class _ScanScreenState extends State<ScanScreen> {
   Future<void> onDisconnectPressed(BluetoothDevice device) async {
     try{
       await device.disconnectAndUpdateStream();
-      Snackbar.show(ABC.c, "Cancel: Success", success: true);
+      Snackbar.show(ABC.b, "Cancel: Success", success: true);
     } catch (e) {
-      Snackbar.show(ABC.c, prettyException("Cancel Error:", e), success: false);
+      Snackbar.show(ABC.b, prettyException("Cancel Error:", e), success: false);
     }
   }
 
@@ -139,9 +131,19 @@ class _ScanScreenState extends State<ScanScreen> {
         child: const Icon(Icons.stop),
         onPressed: onStopPressed,
         backgroundColor: Colors.red,
+        shape: RoundedRectangleBorder( // Define a forma como um círculo
+          borderRadius: BorderRadius.circular(30.0), // Valor do raio para deixar o botão redondo
+        ),
       );
     } else {
-      return FloatingActionButton(child: const Text("SCAN"), onPressed: onScanPressed);
+      return FloatingActionButton(
+        child: const Text("SCAN"),
+        onPressed: onScanPressed,
+        backgroundColor: Color.fromARGB(255, 167, 166, 166),
+        shape: RoundedRectangleBorder( // Define a forma como um círculo
+          borderRadius: BorderRadius.circular(30.0), // Valor do raio para deixar o botão redondo
+        ),
+      );
     }
   }
 
@@ -155,8 +157,6 @@ class _ScanScreenState extends State<ScanScreen> {
         )
         .toList();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
