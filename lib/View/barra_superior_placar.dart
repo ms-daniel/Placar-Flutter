@@ -5,6 +5,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:yon_scoreboard/View/configurations.dart';
 
 import '../Controller/bluetooth_controller.dart';
+import '../Utils/snackbar.dart';
 import 'bluetooth_connection.dart';
 
 class BarraSuperiorPlacar extends StatefulWidget {
@@ -23,6 +24,8 @@ class _BarraSuperiorPlacarState extends State<BarraSuperiorPlacar> {
   late StreamSubscription<BluetoothAdapterState> _adapterStateStateSubscription;
 
   BluetoothConnectionState _deviceState = BluetoothConnectionState.disconnected;
+
+  bool _isDiscoveringServices = false;
 
   /*BluetoothConnectionState _connectionState = BluetoothConnectionState.disconnected;
   late StreamSubscription<BluetoothConnectionState> _connectionStateStateSubscription;*/
@@ -46,19 +49,31 @@ class _BarraSuperiorPlacarState extends State<BarraSuperiorPlacar> {
        _bluetoothController.deviceState = _bluetoothController.deviceConnected.connectionState.listen((BluetoothConnectionState state) async {
           _deviceState = state;
 
-          if (state == BluetoothConnectionState.connected) {
+          if (state == BluetoothConnectionState.connected && _bluetoothController.services.isEmpty) {
             _bluetoothController.services = []; // must rediscover services
           }
           if (state == BluetoothConnectionState.connected && _bluetoothController.rssi == 999) {
             _bluetoothController.rssi = await _bluetoothController.deviceConnected.readRssi();
           }
 
+          if(state == BluetoothConnectionState.disconnected){
+            _bluetoothController.services = [];
+          }
+
           setState(() {
-            
           });
       });
+
+      if(_deviceState == BluetoothConnectionState.connected 
+          && _bluetoothController.services.isEmpty 
+          && !_isDiscoveringServices){
+        discoverServices();
+        
+      }
+        
     }catch (e){
       _deviceState = BluetoothConnectionState.disconnected;
+       _bluetoothController.services = [];
       //TODO
     }
   }
@@ -67,12 +82,31 @@ class _BarraSuperiorPlacarState extends State<BarraSuperiorPlacar> {
   void dispose(){
     try{
       _bluetoothController.deviceState.cancel();
+      _bluetoothController.services = [];
     }catch(e){
       //TODO
     }
     
     _adapterStateStateSubscription.cancel();
     super.dispose();
+  }
+
+  Future discoverServices() async {
+    //Snackbar.show(ABC.a, "Descobrindo serviços...", success: true);
+
+    setState(() {
+      _isDiscoveringServices = true;
+    });
+
+    try {
+      _bluetoothController.services = await _bluetoothController.deviceConnected.discoverServices();
+      Snackbar.show(ABC.a, "Discover Services: Success", success: true);
+    } catch (e) {
+      Snackbar.show(ABC.a, prettyException("Discover Services Error:", e), success: false);
+    }
+    setState(() {
+      _isDiscoveringServices = false;
+    });
   }
   
   //empilhar tela de configuração na tela atual
