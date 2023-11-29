@@ -4,6 +4,7 @@ import 'package:yon_scoreboard/Controller/bluetooth_controller.dart';
 import 'package:yon_scoreboard/Controller/placar_controller.dart';
 import 'package:yon_scoreboard/shared/enums.dart';
 
+import '../Utils/snackbar.dart';
 import '../shared/points_sets.dart';
 
 class Placar extends StatefulWidget {
@@ -32,7 +33,7 @@ class _PlacarState extends State<Placar> {
 
     //expanded para ocupar todo o restante da tela
     return Expanded(
-        child: Padding(
+      child: Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
         //alinhar widget ao centro da tela
