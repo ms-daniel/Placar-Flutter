@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:yon_scoreboard/Controller/bluetooth_controller.dart';
 import 'package:yon_scoreboard/Controller/placar_controller.dart';
@@ -17,10 +20,62 @@ class Placar extends StatefulWidget {
 
 class _PlacarState extends State<Placar> {
   BluetoothController _bluetoothController = BluetoothController();
-  
+
+  //inscrição para valor enviado pelo servdiro ble
+  late StreamSubscription<List<int>> _lastValueReceiveSubscription;
+
+  List<int> _valueToSend  = [];
+  List<int> _valueReceive = [];
+
+  //tenta criar inscrição no fluxo de recebimento de dados do bluetooth
+  void tryInitStream(){
+    try{
+      _lastValueReceiveSubscription = _bluetoothController.characteristicToReceive!.lastValueStream.listen((value) {
+        _valueReceive = value;
+
+        setState(() {});
+      });
+    }catch(e){
+      //TODO
+    }
+  }
+
+  @override
+  void dispose(){
+    try{
+      _lastValueReceiveSubscription.cancel();
+      _valueReceive = [];
+    }catch(e){
+      //TO DO
+    }
+
+    super.dispose();
+  }
+
+  Future<void> separeCharacteristics() async{
+    BluetoothService? service;
+    //BluetoothCharacteristic? receiver;
+    //BluetoothCharacteristic sender;
+
+    if(_bluetoothController.services.isNotEmpty){
+      //retorna um service especifico do microcontrolador que queremos 
+      service = _bluetoothController.services.where(
+        (s) => s.uuid == Guid("4fafc201-1fb5-459e-8fcc-c5c9c331914b")).firstOrNull;
+      //se existir o servico que queremos iremos procurar agora o
+      //characteristics especifico
+      if(service != null){
+        _bluetoothController.characteristicToReceive = service.characteristics.where((c) => c.uuid == Guid("beb5483e-36e1-4688-b7f5-ea07361b26a8")).firstOrNull;
+
+        if(_bluetoothController.characteristicToReceive != null){
+          _bluetoothController.characteristicToReceive!.setNotifyValue(true);
+        }
+          
+      }
+    }
+  }
+
   //para ajustar o tamanho dos widgets
   double _screenPercentage(double screenWith) {
-    //print ("taamnho da tela: $screenWith");
     return (screenWith / 850);
   }
 
