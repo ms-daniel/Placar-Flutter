@@ -35,9 +35,16 @@ class BluetoothController extends ChangeNotifier {
 
   //servicos disponibilizados pela conexao
   List<BluetoothService> _services = [];
-
   set services(List<BluetoothService> services) => _services = services;
   List<BluetoothService> get services => _services;
+
+  //characteristics
+  BluetoothCharacteristic? _charaToReceive = null;
+  BluetoothCharacteristic? _charaToSend = null;
+
+  set characteristicToReceive(BluetoothCharacteristic? characteristic) => _charaToReceive = characteristic;
+  set characteristicToSend(BluetoothCharacteristic? characteristic) => _charaToSend = characteristic;
+  BluetoothCharacteristic? get characteristicToReceive => _charaToReceive;
 
   //estado do bluetooth
   BluetoothAdapterState _adapterState = BluetoothAdapterState.unknown;
