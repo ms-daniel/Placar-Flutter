@@ -35,6 +35,8 @@ class _PlacarState extends State<Placar> {
 
         setState(() {});
       });
+
+      separateCharacteristics();
     }catch(e){
       //TODO
     }
@@ -52,7 +54,7 @@ class _PlacarState extends State<Placar> {
     super.dispose();
   }
 
-  Future<void> separeCharacteristics() async{
+  Future separateCharacteristics() async{
     BluetoothService? service;
     //BluetoothCharacteristic? receiver;
     //BluetoothCharacteristic sender;
@@ -68,9 +70,22 @@ class _PlacarState extends State<Placar> {
 
         if(_bluetoothController.characteristicToReceive != null){
           _bluetoothController.characteristicToReceive!.setNotifyValue(true);
+
+          setState(() {});
         }
           
       }
+    }
+  }
+
+  Future separateData() async{
+    String strData;
+    List<String> substrings;
+
+    if(_valueReceive.isNotEmpty){
+      strData = String.fromCharCodes(_valueReceive);
+
+      substrings = strData.split(';');
     }
   }
 
