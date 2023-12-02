@@ -23,38 +23,78 @@ class _PlacarState extends State<Placar> {
 
   //inscrição para valor enviado pelo servdiro ble
   late StreamSubscription<List<int>> _lastValueReceiveSubscription;
+  bool isSubscriptionLastValue = false;
+
+  late StreamSubscription<OnConnectionStateChangedEvent> _connectionStateSubscription;
+
+  late StreamSubscription<bool> _servicesStreamSubscription;
+
+  bool tryit = false;
 
   List<int> _valueToSend  = [];
   List<int> _valueReceive = [];
 
+  String _logText = "";
+
+  bool isRunning = false;
+
+  @override
+  void initState(){
+    super.initState();
+
+    _servicesStreamSubscription = _bluetoothController.isServicesStream.listen((isServices) async {
+      if(isServices){
+        separateCharacteristics();
+        //tryInitStream();
+
+        //setState(() {});
+      }
+      else{
+        if(isSubscriptionLastValue){
+          _lastValueReceiveSubscription.cancel();
+        }
+      }
+    });
+  }
+
   //tenta criar inscrição no fluxo de recebimento de dados do bluetooth
-  void tryInitStream(){
+  Future<void> tryInitStream() async{
     try{
-      _lastValueReceiveSubscription = _bluetoothController.characteristicToReceive!.lastValueStream.listen((value) {
+      _lastValueReceiveSubscription = _bluetoothController.characteristicToReceive!.lastValueStream.listen((value) async {
         _valueReceive = value;
 
-        setState(() {});
+        separateData();
+
+        //setState(() {});
       });
 
-      separateCharacteristics();
+      isSubscriptionLastValue = true;
     }catch(e){
+      
       //TODO
     }
   }
 
   @override
   void dispose(){
-    try{
+    _servicesStreamSubscription.cancel();
+    
+    if(isSubscriptionLastValue){
       _lastValueReceiveSubscription.cancel();
       _valueReceive = [];
-    }catch(e){
-      //TO DO
+      isSubscriptionLastValue = false;
     }
+
+      _connectionStateSubscription.cancel();
 
     super.dispose();
   }
 
-  Future separateCharacteristics() async{
+  Future<void> separateCharacteristics() async{
+    setState(() {
+      _logText = "Descobrindo serviços...";
+    });
+
     BluetoothService? service;
     //BluetoothCharacteristic? receiver;
     //BluetoothCharacteristic sender;
@@ -63,10 +103,16 @@ class _PlacarState extends State<Placar> {
       //retorna um service especifico do microcontrolador que queremos 
       service = _bluetoothController.services.where(
         (s) => s.uuid == Guid("4fafc201-1fb5-459e-8fcc-c5c9c331914b")).firstOrNull;
+
+      Snackbar.show(ABC.a, "Separando caracteristicas....", success: true);
+
+      
       //se existir o servico que queremos iremos procurar agora o
       //characteristics especifico
       if(service != null){
         _bluetoothController.characteristicToReceive = service.characteristics.where((c) => c.uuid == Guid("beb5483e-36e1-4688-b7f5-ea07361b26a8")).firstOrNull;
+
+        
 
         if(_bluetoothController.characteristicToReceive != null){
           _bluetoothController.characteristicToReceive!.setNotifyValue(true);
@@ -78,7 +124,7 @@ class _PlacarState extends State<Placar> {
     }
   }
 
-  Future separateData() async{
+  Future<void> separateData() async{
     String strData;
     List<String> substrings;
 
@@ -86,7 +132,37 @@ class _PlacarState extends State<Placar> {
       strData = String.fromCharCodes(_valueReceive);
 
       substrings = strData.split(';');
+
+      print("Data: $substrings");
     }
+  }
+
+  Widget _buildLogWidget(BuildContext context){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        IndexedStack(
+          index: (isRunning) ? 1 : 0,
+          children: const <Widget>[
+            Icon(Icons.close_outlined),
+            SizedBox(
+              width: 18.0,
+              height: 18.0,
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation(Colors.grey),
+              ),
+            ),
+          ],
+        ),
+        Text(
+          _logText,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.white,
+          ),
+        )
+      ],
+    );
   }
 
   //para ajustar o tamanho dos widgets
@@ -96,6 +172,7 @@ class _PlacarState extends State<Placar> {
 
   @override
   Widget build(BuildContext context) {
+
     final placarController = context.watch<PlacarController>();
 
     final Size screenSize = MediaQuery.of(context).size;
