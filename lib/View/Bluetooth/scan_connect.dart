@@ -100,7 +100,11 @@ class _ScanScreenState extends State<ScanScreen> {
 
     device.connectAndUpdateStream().catchError((e) {
       Snackbar.show(ABC.a, prettyException("Connect Error:", e), success: false);
+      //null nao funciona, teremos que avaliar de outra forma
+      _bluetoothController.deviceConnected = BluetoothDevice.fromId("");
     });
+
+    
 
     Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(builder: (context) => PlacarApp()),
