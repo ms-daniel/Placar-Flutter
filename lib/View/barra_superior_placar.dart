@@ -5,7 +5,7 @@ import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:yon_scoreboard/View/configurations.dart';
 
 import '../Controller/bluetooth_controller.dart';
-import '../Utils/snackbar.dart';
+//import '../Utils/snackbar.dart';
 import 'bluetooth_connection.dart';
 
 class BarraSuperiorPlacar extends StatefulWidget {
@@ -46,9 +46,10 @@ class _BarraSuperiorPlacarState extends State<BarraSuperiorPlacar> {
     //TRY CATCH pois a variavel é late
     try{
       //verifica se dispositivo esta conectado
-       _bluetoothController.deviceState = _bluetoothController.deviceConnected.connectionState.listen((BluetoothConnectionState state) async {
+       _bluetoothController.deviceState = _bluetoothController.deviceConnected.connectionState.listen((state) async {
           _deviceState = state;
 
+          //reinicia serviços caso reconecte
           if (state == BluetoothConnectionState.connected && _bluetoothController.services.isEmpty) {
             _bluetoothController.services = []; // must rediscover services
           }
@@ -64,11 +65,11 @@ class _BarraSuperiorPlacarState extends State<BarraSuperiorPlacar> {
           });
       });
 
+      //descobrir serviços em caso de necessidade
       if(_deviceState == BluetoothConnectionState.connected 
           && _bluetoothController.services.isEmpty 
           && !_isDiscoveringServices){
         discoverServices();
-        
       }
         
     }catch (e){
@@ -83,6 +84,7 @@ class _BarraSuperiorPlacarState extends State<BarraSuperiorPlacar> {
     try{
       _bluetoothController.deviceState.cancel();
       _bluetoothController.services = [];
+
     }catch(e){
       //TODO
     }
@@ -100,9 +102,10 @@ class _BarraSuperiorPlacarState extends State<BarraSuperiorPlacar> {
 
     try {
       _bluetoothController.services = await _bluetoothController.deviceConnected.discoverServices();
-      Snackbar.show(ABC.a, "Discover Services: Success", success: true);
+      //Snackbar.show(ABC.a, "Discover Services: Success", success: true);
     } catch (e) {
-      Snackbar.show(ABC.a, prettyException("Discover Services Error:", e), success: false);
+      _bluetoothController.services = [];
+      //Snackbar.show(ABC.a, prettyException("Discover Services Error:", e), success: false);
     }
     setState(() {
       _isDiscoveringServices = false;
