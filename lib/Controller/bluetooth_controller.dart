@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_getters_setters
+
 import 'package:flutter/widgets.dart';
 
 import 'dart:async';
@@ -16,7 +18,7 @@ class BluetoothController extends ChangeNotifier {
   //END SINGLETON
 
   //device conectado ao app
-  late BluetoothDevice _deviceConnected;
+  late BluetoothDevice _deviceConnected = BluetoothDevice.fromId("");
   set deviceConnected(BluetoothDevice device) => _deviceConnected = device;
   BluetoothDevice get deviceConnected => _deviceConnected;
 
@@ -35,12 +37,22 @@ class BluetoothController extends ChangeNotifier {
 
   //servicos disponibilizados pela conexao
   List<BluetoothService> _services = [];
-  set services(List<BluetoothService> services) => _services = services;
+  set services(List<BluetoothService> services) {
+    _services = services;
+
+    //verifica se a service esta vazia ou nao
+    //para avisar ao fluxo
+    _servicesController.sink.add(_services.isEmpty ? false : true);
+  }
   List<BluetoothService> get services => _services;
 
+  //fluxo para verificar se há services (usado noo placar, necessario refatorar depois)
+  final _servicesController = StreamController<bool>();
+  Stream<bool> get isServicesStream => _servicesController.stream; 
+
   //characteristics
-  BluetoothCharacteristic? _charaToReceive = null;
-  BluetoothCharacteristic? _charaToSend = null;
+  BluetoothCharacteristic? _charaToReceive;
+  BluetoothCharacteristic? _charaToSend;
 
   set characteristicToReceive(BluetoothCharacteristic? characteristic) => _charaToReceive = characteristic;
   set characteristicToSend(BluetoothCharacteristic? characteristic) => _charaToSend = characteristic;
@@ -59,7 +71,6 @@ class BluetoothController extends ChangeNotifier {
       _adapterStateStateSubscription;
   set adapterState(BluetoothAdapterState state) => _adapterState = state;
 
-  //get adapterStateStateSubscription => _adapterStateStateSubscription;
   set adapterStateStateSubscription(
           StreamSubscription<BluetoothAdapterState> stream) =>
       _adapterStateStateSubscription = stream;
@@ -80,14 +91,18 @@ class BluetoothController extends ChangeNotifier {
   //estado da conexao
   BluetoothConnectionState _connectionState =
       BluetoothConnectionState.disconnected;
-  late StreamSubscription<BluetoothConnectionState>
-      _connectionStateSubscription;
+
+  set connectionState(BluetoothConnectionState state) => _connectionState = state;
+  BluetoothConnectionState get connectionState => _connectionState;
+
+  /*late StreamSubscription<BluetoothConnectionState>
+      _connectionStateSubscription;*/
 
   
 
   //verificar uso
-  bool _isDiscoveringServices = false;
+  /*bool _isDiscoveringServices = false;
 
   bool _isConnectingOrDisconnecting = false;
-  late StreamSubscription<bool> _isConnectingOrDisconnectingSubscription;
+  late StreamSubscription<bool> _isConnectingOrDisconnectingSubscription;*/
 }
