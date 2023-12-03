@@ -7,7 +7,6 @@ import 'package:yon_scoreboard/Controller/bluetooth_controller.dart';
 import 'package:yon_scoreboard/Controller/placar_controller.dart';
 import 'package:yon_scoreboard/shared/enums.dart';
 
-import '../Utils/snackbar.dart';
 import '../shared/points_sets.dart';
 
 class Placar extends StatefulWidget {
@@ -19,13 +18,13 @@ class Placar extends StatefulWidget {
 }
 
 class _PlacarState extends State<Placar> {
-  late final placarController;
+  late final PlacarController placarController;
   Size? screenSize;
   double percentageAdjust = 1;
 
   bool isInicialized = false;
 
-  BluetoothController _bluetoothController = BluetoothController();
+  final BluetoothController _bluetoothController = BluetoothController();
 
   //inscrição para valor enviado pelo servdiro ble
   late StreamSubscription<List<int>> _lastValueReceiveSubscription;
@@ -54,10 +53,9 @@ class _PlacarState extends State<Placar> {
 
     _servicesStreamSubscription = _bluetoothController.isServicesStream.listen((isServices) async {
       if(isServices){
-        _separateCharacteristics();
+        await _separateCharacteristics();
+        
         _tryInitStream();
-
-        //setState(() {});
       }
       else{
         if(isSubscriptionLastValue){
@@ -79,13 +77,16 @@ class _PlacarState extends State<Placar> {
       _lastValueReceiveSubscription = _bluetoothController.characteristicToReceive!.lastValueStream.listen((value) async {
         _valueReceive = value;
 
+        setState(() {
+          _logText = "Valor recebido: ${String.fromCharCodes(value)}";
+        });
+
         _separateData();
 
       });
 
       isSubscriptionLastValue = true;
     }catch(e){
-      
       //TODO
     }
   }
