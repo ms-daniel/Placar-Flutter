@@ -55,7 +55,7 @@ class _PlacarState extends State<Placar> {
     _servicesStreamSubscription = _bluetoothController.isServicesStream.listen((isServices) async {
       if(isServices){
         _separateCharacteristics();
-        //tryInitStream();
+        _tryInitStream();
 
         //setState(() {});
       }
@@ -228,9 +228,8 @@ class _PlacarState extends State<Placar> {
 
     return Expanded(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(15, 0, 15,0),
+        padding: EdgeInsets.fromLTRB(15, 25*percentageAdjust, 15,0),
         child: Column(
-          //crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
@@ -246,7 +245,7 @@ class _PlacarState extends State<Placar> {
                         onPressed: () {
                           placarController.addTeamPoints(Teams.one, 1);
                         },
-                        iconSize: 60 * percentageAdjust,
+                        iconSize: 50 * percentageAdjust,
                         color: Colors.green[900],
                         icon: const Icon(Icons.add_circle_outline),
                         //mouseCursor: MaterialState.focused,
@@ -257,7 +256,7 @@ class _PlacarState extends State<Placar> {
                         onPressed: () {
                           placarController.addTeamPoints(Teams.one, -1);
                         },
-                        iconSize: 60 * percentageAdjust,
+                        iconSize: 50 * percentageAdjust,
                         color: Colors.red[900],
                         icon: const Icon(Icons.remove_circle_outline),
                       ),
@@ -284,7 +283,7 @@ class _PlacarState extends State<Placar> {
                         onPressed: () {
                           placarController.addTeamPoints(Teams.two, 1);
                         },
-                        iconSize: 60 * percentageAdjust,
+                        iconSize: 50 * percentageAdjust,
                         color: Colors.green[900],
                         icon: const Icon(Icons.add_circle_outline),
                       ),
@@ -293,7 +292,7 @@ class _PlacarState extends State<Placar> {
                         onPressed: () {
                           placarController.addTeamPoints(Teams.two, -1);
                         },
-                        iconSize: 60 * percentageAdjust,
+                        iconSize: 50 * percentageAdjust,
                         color: Colors.red[900],
                         icon: const Icon(Icons.remove_circle_outline),
                       ),
@@ -313,8 +312,8 @@ class _PlacarState extends State<Placar> {
     return
       //botao de reset
       Container(
-        margin: EdgeInsets.only(bottom: 20*percentageAdjust),
-        alignment: Alignment.bottomCenter,
+        margin: EdgeInsets.only(top: 150*percentageAdjust),
+        alignment: Alignment.center,
         //margin: EdgeInsets.fromLTRB(0, screenSize.height * 0.30, 0, 0),
         //inkwell para adicionar long press
         child: InkWell(
@@ -415,7 +414,7 @@ class _PlacarState extends State<Placar> {
                 },
               ),
               //placarController.resetPoints,
-              iconSize: (70 * percentageAdjust),
+              iconSize: (60 * percentageAdjust),
               color: Colors.blue[900],
               icon: const Icon(Icons.refresh_outlined),
             ),
