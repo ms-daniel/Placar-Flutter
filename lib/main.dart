@@ -8,7 +8,7 @@ import 'package:yon_scoreboard/View/placar.dart';
 import 'package:provider/provider.dart';
 
 main() {
-  debugPaintSizeEnabled = true;
+  //debugPaintSizeEnabled = true;
   runApp(
     ChangeNotifierProvider(
       create: (context) => PlacarController(),

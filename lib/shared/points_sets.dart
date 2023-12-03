@@ -19,6 +19,7 @@ class TeamPoints extends StatelessWidget {
             fontSize: 230 * _fontAdjust,
             color: Colors.white,
             decoration: TextDecoration.underline,
+            decorationColor: Colors.white,
             fontFamily: 'Nova Square',
           ),
           maxLines: 1,
@@ -44,6 +45,7 @@ class TeamSets extends StatelessWidget {
         style: TextStyle(
           fontSize: 74 * _fontAdjust,
           color: Colors.white,
+          fontFamily: 'Nova Square',
         ),
       ),
     );
