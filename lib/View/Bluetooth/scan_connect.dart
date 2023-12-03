@@ -4,8 +4,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:yon_scoreboard/Utils/extra.dart';
-import 'package:yon_scoreboard/View/placar.dart';
-import 'package:yon_scoreboard/main.dart';
 
 import '../../Controller/bluetooth_controller.dart';
 import '../../Utils/snackbar.dart';
@@ -20,7 +18,7 @@ class ScanScreen extends StatefulWidget {
 }
 
 class _ScanScreenState extends State<ScanScreen> {
-  BluetoothController _bluetoothController = BluetoothController();
+  final BluetoothController _bluetoothController = BluetoothController();
 
   bool _isScanning = false;
   late StreamSubscription<List<ScanResult>> _scanResultsSubscription;
@@ -137,7 +135,7 @@ class _ScanScreenState extends State<ScanScreen> {
     } else {
       return FloatingActionButton(
         onPressed: onScanPressed,
-        backgroundColor: Color.fromARGB(255, 167, 166, 166),
+        backgroundColor: const Color.fromARGB(255, 167, 166, 166),
         shape: RoundedRectangleBorder( // Define a forma como um círculo
           borderRadius: BorderRadius.circular(30.0), // Valor do raio para deixar o botão redondo
         ),
@@ -163,7 +161,7 @@ class _ScanScreenState extends State<ScanScreen> {
       key: Snackbar.snackBarKeyB,
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Color.fromARGB(255, 68, 102, 136),
+          backgroundColor: const Color.fromARGB(255, 68, 102, 136),
           title: const Center(
             child:
               Text(
