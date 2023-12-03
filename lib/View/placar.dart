@@ -7,6 +7,7 @@ import 'package:yon_scoreboard/Controller/bluetooth_controller.dart';
 import 'package:yon_scoreboard/Controller/placar_controller.dart';
 import 'package:yon_scoreboard/shared/enums.dart';
 
+import '../Utils/snackbar.dart';
 import '../shared/points_sets.dart';
 
 class Placar extends StatefulWidget {
@@ -18,11 +19,11 @@ class Placar extends StatefulWidget {
 }
 
 class _PlacarState extends State<Placar> {
-  late final PlacarController placarController;
-  Size? screenSize;
-  double percentageAdjust = 1;
+  late final PlacarController _placarController;
+  Size? _screenSize;
+  double _percentageAdjust = 1;
 
-  bool isInicialized = false;
+  bool _isInicialized = false;
 
   final BluetoothController _bluetoothController = BluetoothController();
 
@@ -30,11 +31,13 @@ class _PlacarState extends State<Placar> {
   late StreamSubscription<List<int>> _lastValueReceiveSubscription;
 
   //verifica se a inscriçao esta ativa
-  bool isSubscriptionLastValue = false;
+  bool _isSubscriptionLastValue = false;
 
   late StreamSubscription<OnConnectionStateChangedEvent> _connectionStateSubscription;
 
   late StreamSubscription<bool> _servicesStreamSubscription;
+
+  late BluetoothCharacteristic _charac ;
 
   List<int> _valueToSend  = [];
   List<int> _valueReceive = [];
@@ -47,22 +50,28 @@ class _PlacarState extends State<Placar> {
   //saber se os characteristics foram separados e estão prontos para uso
   bool isReady = false;
 
+  String dados = "";
+
   @override
   void initState(){
     super.initState();
 
     _servicesStreamSubscription = _bluetoothController.isServicesStream.listen((isServices) async {
       if(isServices){
+        setState(() {
+          isRunning = true;
+        });
+        
         await _separateCharacteristics();
         
         _tryInitStream();
       }
       else{
-        if(isSubscriptionLastValue){
+        if(_isSubscriptionLastValue){
           _lastValueReceiveSubscription.cancel();
-          isSubscriptionLastValue = false;
+          _isSubscriptionLastValue = false;
         }
-        
+
         isReady = false;
         setState(() {
           _logText = "Sem serviço ou Desconectado";
@@ -74,7 +83,7 @@ class _PlacarState extends State<Placar> {
   //tenta criar inscrição no fluxo de recebimento de dados do bluetooth
   Future<void> _tryInitStream() async{
     try{
-      _lastValueReceiveSubscription = _bluetoothController.characteristicToReceive!.lastValueStream.listen((value) async {
+      _lastValueReceiveSubscription = _bluetoothController.characteristic!.lastValueStream.listen((value) async {
         _valueReceive = value;
 
         setState(() {
@@ -85,7 +94,7 @@ class _PlacarState extends State<Placar> {
 
       });
 
-      isSubscriptionLastValue = true;
+      _isSubscriptionLastValue = true;
     }catch(e){
       //TODO
     }
@@ -95,10 +104,10 @@ class _PlacarState extends State<Placar> {
   void dispose(){
     _servicesStreamSubscription.cancel();
     
-    if(isSubscriptionLastValue){
+    if(_isSubscriptionLastValue){
       _lastValueReceiveSubscription.cancel();
       _valueReceive = [];
-      isSubscriptionLastValue = false;
+      _isSubscriptionLastValue = false;
     }
 
     _connectionStateSubscription.cancel();
@@ -108,8 +117,9 @@ class _PlacarState extends State<Placar> {
     super.dispose();
   }
 
+  ///Faz a separacao dos characterisitics
+  ///para envio e recebimento de dados
   Future<void> _separateCharacteristics() async{
-    isRunning = true;
     setState(() {
       _logText = "Descobrindo serviços...";
     });
@@ -130,12 +140,13 @@ class _PlacarState extends State<Placar> {
       //se existir o servico que queremos iremos procurar agora o
       //characteristics especifico
       if(service != null){
-        _bluetoothController.characteristicToReceive = service.characteristics.where((c) => c.uuid == Guid("beb5483e-36e1-4688-b7f5-ea07361b26a8")).firstOrNull;
+        _bluetoothController.characteristic = service.characteristics.where((c) => c.uuid == Guid("beb5483e-36e1-4688-b7f5-ea07361b26a8")).firstOrNull;
 
         
 
-        if(_bluetoothController.characteristicToReceive != null){
-          _bluetoothController.characteristicToReceive!.setNotifyValue(true);
+        if(_bluetoothController.characteristic != null){
+          _charac = _bluetoothController.characteristic!;
+          _charac.setNotifyValue(true);
 
           isRunning = false;
           isReady = true;
@@ -148,6 +159,7 @@ class _PlacarState extends State<Placar> {
     }
   }
 
+  ///Separar dados recebidos do servidor para atualizar na tela
   Future<void> _separateData() async{
     String strData;
     List<String> substrings;
@@ -159,6 +171,7 @@ class _PlacarState extends State<Placar> {
     }
   }
 
+  ///Construção do log de conexao bluetooth
   Widget _buildLogWidget(BuildContext context){
     return Padding(
       padding: const EdgeInsets.only(bottom: 5.0, top: 5),
@@ -197,6 +210,23 @@ class _PlacarState extends State<Placar> {
     );
   }
 
+  ///Usado para enviar dados para o servidor
+  Future<void> _sendData() async{
+    dados = "${_placarController.teamOnePoints};${_placarController.teamOneSets};${_placarController.teamTwoPoints};${_placarController.teamTwoSets}"; 
+
+    _valueToSend = dados.codeUnits;
+
+    try{
+      await _charac.write(_valueToSend, withoutResponse: _charac.properties.writeWithoutResponse);
+      if(_charac.properties.read) {
+        await _charac.read();
+      }
+
+    }catch(e){
+      Snackbar.show(ABC.a, "Error ao tentar enviar dados. $e", success: false);
+    }
+  }
+
   //para ajustar o tamanho dos widgets
   double _screenPercentage(double screenWith) {
     //print("Screen tamnho: $screenWith");
@@ -207,10 +237,10 @@ class _PlacarState extends State<Placar> {
   Future<void> _oneTimeInstructions(BuildContext context) async {
     Future.delayed(const Duration(milliseconds: 1000), () {
       //evitar multiplas atribuições
-      screenSize = MediaQuery.of(context).size;
-      percentageAdjust = _screenPercentage(screenSize!.width);
+      _screenSize = MediaQuery.of(context).size;
+      _percentageAdjust = _screenPercentage(_screenSize!.width);
 
-      placarController = context.watch<PlacarController>();
+      _placarController = context.watch<PlacarController>();
 
       setState(() {
         
@@ -220,16 +250,16 @@ class _PlacarState extends State<Placar> {
 
   @override
   Widget build(BuildContext context) {
-    if(!isInicialized){
-      placarController = context.watch<PlacarController>();
+    if(!_isInicialized){
+      _placarController = context.watch<PlacarController>();
       _oneTimeInstructions(context);
 
-      isInicialized = true;
+      _isInicialized = true;
     }
 
     return Expanded(
       child: Padding(
-        padding: EdgeInsets.fromLTRB(15, 25*percentageAdjust, 15,0),
+        padding: EdgeInsets.fromLTRB(15, 25*_percentageAdjust, 15,0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -250,16 +280,16 @@ class _PlacarState extends State<Placar> {
                   ),
               
                   //time 1: pontos
-                  TeamPoints(placarController.teamOnePoints, percentageAdjust),
+                  TeamPoints(_placarController.teamOnePoints, _percentageAdjust),
                   //time 1: sets
-                  TeamSets(placarController.teamOneSets, percentageAdjust),
+                  TeamSets(_placarController.teamOneSets, _percentageAdjust),
               
                   _resetButton(context),
                   
                   //time 2: sets
-                  TeamSets(placarController.teamTwoSets, percentageAdjust),
+                  TeamSets(_placarController.teamTwoSets, _percentageAdjust),
                   //time 2: pontos
-                  TeamPoints(placarController.teamTwoPoints, percentageAdjust),
+                  TeamPoints(_placarController.teamTwoPoints, _percentageAdjust),
               
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -286,12 +316,16 @@ class _PlacarState extends State<Placar> {
   /// [increment] incremento e decremento (+n/-n)
   /// [icon] icone do botao
   /// [color] Cor do icone
-  IconButton _pointsButton(Teams team, {required int increment, required IconData icon, required Color color} ) {
+  Widget _pointsButton(Teams team, {required int increment, required IconData icon, required Color color} ) {
     return IconButton(
-              onPressed: () {
-                placarController.addTeamPoints(team, increment);
+              onPressed: () async{
+                _placarController.addTeamPoints(team, increment);
+
+                if(_isSubscriptionLastValue){
+                   _sendData();
+                }
               },
-              iconSize: 50 * percentageAdjust,
+              iconSize: 50 * _percentageAdjust,
               color: color,
               icon: Icon(icon),
               //mouseCursor: MaterialState.focused,
@@ -302,7 +336,7 @@ class _PlacarState extends State<Placar> {
     return
       //botao de reset
       Container(
-        margin: EdgeInsets.only(top: 150*percentageAdjust),
+        margin: EdgeInsets.only(top: 150*_percentageAdjust),
         alignment: Alignment.center,
         //margin: EdgeInsets.fromLTRB(0, screenSize.height * 0.30, 0, 0),
         //inkwell para adicionar long press
@@ -322,7 +356,7 @@ class _PlacarState extends State<Placar> {
                 },
               ),
               //placarController.resetPoints,
-              iconSize: (60 * percentageAdjust),
+              iconSize: (60 * _percentageAdjust),
               color: Colors.blue[900],
               icon: const Icon(Icons.refresh_outlined),
             ),
@@ -369,7 +403,7 @@ class _PlacarState extends State<Placar> {
                 onPressed: () {
                   //caso confirme reset
                   Navigator.of(context).pop(); // Fecha o diálogo
-                  placarController.resetSets();
+                  _placarController.resetSets();
                 },
               ),
             ],
@@ -414,7 +448,7 @@ class _PlacarState extends State<Placar> {
                 onPressed: () {
                   //caso confirme reset
                   Navigator.of(context).pop(); // Fecha o diálogo
-                  placarController.resetPoints();
+                  _placarController.resetPoints();
                 },
               ),
             ],

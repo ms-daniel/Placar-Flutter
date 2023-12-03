@@ -52,12 +52,12 @@ class BluetoothController extends ChangeNotifier {
 
   //characteristics
   BluetoothCharacteristic? _charaToReceive;
-  BluetoothCharacteristic? _charaToSend;
+  //BluetoothCharacteristic? _charaToSend;
 
-  set characteristicToReceive(BluetoothCharacteristic? characteristic) => _charaToReceive = characteristic;
-  set characteristicToSend(BluetoothCharacteristic? characteristic) => _charaToSend = characteristic;
-  BluetoothCharacteristic? get characteristicToReceive => _charaToReceive;
-  BluetoothCharacteristic? get characteristicToSend => _charaToSend;
+  set characteristic(BluetoothCharacteristic? characteristic) => _charaToReceive = characteristic;
+  //set characteristicToSend(BluetoothCharacteristic? characteristic) => _charaToSend = characteristic;
+  BluetoothCharacteristic? get characteristic => _charaToReceive;
+  //BluetoothCharacteristic? get characteristicToSend => _charaToSend;
 
   //estado do bluetooth
   BluetoothAdapterState _adapterState = BluetoothAdapterState.unknown;
