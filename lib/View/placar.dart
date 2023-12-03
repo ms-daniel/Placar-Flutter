@@ -153,6 +153,8 @@ class _PlacarState extends State<Placar> {
           setState(() {
             _logText = "Pronto para receber dados!";
           });
+
+          _sendData();
         }
           
       }
