@@ -6,6 +6,7 @@ import 'package:yon_scoreboard/View/configurations.dart';
 
 import '../Controller/bluetooth_controller.dart';
 //import '../Utils/snackbar.dart';
+import '../Utils/snackbar.dart';
 import 'bluetooth_connection.dart';
 
 class BarraSuperiorPlacar extends StatefulWidget {
@@ -105,7 +106,7 @@ class _BarraSuperiorPlacarState extends State<BarraSuperiorPlacar> {
       //Snackbar.show(ABC.a, "Discover Services: Success", success: true);
     } catch (e) {
       _bluetoothController.services = [];
-      //Snackbar.show(ABC.a, prettyException("Discover Services Error:", e), success: false);
+      Snackbar.show(ABC.a, prettyException("Discover Services Error:", e), success: false);
     }
     setState(() {
       _isDiscoveringServices = false;
@@ -115,13 +116,13 @@ class _BarraSuperiorPlacarState extends State<BarraSuperiorPlacar> {
   //empilhar tela de configuração na tela atual
   void _openConfigurations() {
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => const Configurations(),
+      builder: (context) => Configurations(),
     ));
   }
 
   void _openBluetooth(){
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => const BluetoothMain(),
+      builder: (context) => BluetoothMain(),
     ));
   }
 

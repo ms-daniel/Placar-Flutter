@@ -10,22 +10,20 @@ class TeamPoints extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-            flex: 4,
-            child: Container(
-              alignment: Alignment.center,
-              child: AutoSizeText(
-                _points < 10
-                    ? '0$_points'
-                    : _points.toString(),
-                style: TextStyle(
-                  fontSize: (210 * _fontAdjust),
-                  color: Colors.white,
-                  decoration: TextDecoration.underline,
-                ),
-                maxLines: 1,
-              ),
-            ),
-          );
+      child: Center(
+        child: AutoSizeText(
+          _points < 10
+              ? '0$_points'
+              : _points.toString(),
+          style: TextStyle(
+            fontSize: 210 * _fontAdjust,
+            color: Colors.white,
+            decoration: TextDecoration.underline,
+          ),
+          maxLines: 1,
+        ),
+      ),
+    );
   }
 }
 
@@ -37,19 +35,16 @@ class TeamSets extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-            flex: 1,
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-              alignment: Alignment.topLeft,
-              child: Text(
-                _sets.toString(),
-                style: TextStyle(
-                  fontSize: (74 * _fontAdjust),
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          );
+    return Container(
+      margin: EdgeInsets.only(top: 26 * _fontAdjust),
+      alignment: Alignment.topCenter,
+      child: AutoSizeText(
+        _sets.toString(),
+        style: TextStyle(
+          fontSize: 74 * _fontAdjust,
+          color: Colors.white,
+        ),
+      ),
+    );
   }
 }

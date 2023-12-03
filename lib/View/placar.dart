@@ -19,10 +19,18 @@ class Placar extends StatefulWidget {
 }
 
 class _PlacarState extends State<Placar> {
+  late final placarController;
+  Size? screenSize;
+  double percentageAdjust = 1;
+
+  bool isInicialized = false;
+
   BluetoothController _bluetoothController = BluetoothController();
 
   //inscrição para valor enviado pelo servdiro ble
   late StreamSubscription<List<int>> _lastValueReceiveSubscription;
+
+  //verifica se a inscriçao esta ativa
   bool isSubscriptionLastValue = false;
 
   late StreamSubscription<OnConnectionStateChangedEvent> _connectionStateSubscription;
@@ -34,8 +42,9 @@ class _PlacarState extends State<Placar> {
   List<int> _valueToSend  = [];
   List<int> _valueReceive = [];
 
-  String _logText = "";
+  String _logText = "Sem serviço ou Desconectado";
 
+  //
   bool isRunning = false;
 
   @override
@@ -44,7 +53,7 @@ class _PlacarState extends State<Placar> {
 
     _servicesStreamSubscription = _bluetoothController.isServicesStream.listen((isServices) async {
       if(isServices){
-        separateCharacteristics();
+        _separateCharacteristics();
         //tryInitStream();
 
         //setState(() {});
@@ -52,18 +61,23 @@ class _PlacarState extends State<Placar> {
       else{
         if(isSubscriptionLastValue){
           _lastValueReceiveSubscription.cancel();
+          isSubscriptionLastValue = false;
         }
+        
+        setState(() {
+          _logText = "Sem serviço ou Desconectado";
+        });
       }
     });
   }
 
   //tenta criar inscrição no fluxo de recebimento de dados do bluetooth
-  Future<void> tryInitStream() async{
+  Future<void> _tryInitStream() async{
     try{
       _lastValueReceiveSubscription = _bluetoothController.characteristicToReceive!.lastValueStream.listen((value) async {
         _valueReceive = value;
 
-        separateData();
+        _separateData();
 
         //setState(() {});
       });
@@ -90,7 +104,7 @@ class _PlacarState extends State<Placar> {
     super.dispose();
   }
 
-  Future<void> separateCharacteristics() async{
+  Future<void> _separateCharacteristics() async{
     setState(() {
       _logText = "Descobrindo serviços...";
     });
@@ -104,9 +118,10 @@ class _PlacarState extends State<Placar> {
       service = _bluetoothController.services.where(
         (s) => s.uuid == Guid("4fafc201-1fb5-459e-8fcc-c5c9c331914b")).firstOrNull;
 
-      Snackbar.show(ABC.a, "Separando caracteristicas....", success: true);
+      setState(() {
+        _logText = "Separando caracteristicas....";
+      });
 
-      
       //se existir o servico que queremos iremos procurar agora o
       //characteristics especifico
       if(service != null){
@@ -124,7 +139,7 @@ class _PlacarState extends State<Placar> {
     }
   }
 
-  Future<void> separateData() async{
+  Future<void> _separateData() async{
     String strData;
     List<String> substrings;
 
@@ -132,248 +147,268 @@ class _PlacarState extends State<Placar> {
       strData = String.fromCharCodes(_valueReceive);
 
       substrings = strData.split(';');
-
-      print("Data: $substrings");
     }
   }
 
   Widget _buildLogWidget(BuildContext context){
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        IndexedStack(
-          index: (isRunning) ? 1 : 0,
-          children: const <Widget>[
-            Icon(Icons.close_outlined),
-            SizedBox(
-              width: 18.0,
-              height: 18.0,
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(Colors.grey),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 5.0, top: 5),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          IndexedStack(
+            index: (isRunning) ? 1 : 0,
+            children: const <Widget>[
+              Icon(
+                Icons.close_outlined,
+                color: Color.fromARGB(255, 114, 8, 8),
               ),
-            ),
-          ],
-        ),
-        Text(
-          _logText,
-          style: const TextStyle(
-            fontSize: 12,
-            color: Colors.white,
+              SizedBox(
+                width: 18.0,
+                height: 18.0,
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(Colors.grey),
+                ),
+              ),
+            ],
           ),
-        )
-      ],
+          Text(
+            _logText,
+            style: const TextStyle(
+              fontSize: 12,
+              color: Colors.white,
+            ),
+          )
+        ],
+      ),
     );
   }
 
   //para ajustar o tamanho dos widgets
   double _screenPercentage(double screenWith) {
-    return (screenWith / 850);
+    //print("Screen tamnho: $screenWith");
+    return (screenWith / 850 );
+  }
+
+  //gambiarra para contornar erro de ajuste de tamanhos
+  Future<void> _oneTimeInstructions(BuildContext context) async {
+    Future.delayed(const Duration(milliseconds: 1000), () {
+      //evitar multiplas atribuições
+      screenSize = MediaQuery.of(context).size;
+      percentageAdjust = _screenPercentage(screenSize!.width);
+
+      placarController = context.watch<PlacarController>();
+
+      setState(() {
+        
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    if(!isInicialized){
+      placarController = context.watch<PlacarController>();
+      _oneTimeInstructions(context);
 
-    final placarController = context.watch<PlacarController>();
+      isInicialized = true;
+    }
 
-    final Size screenSize = MediaQuery.of(context).size;
-    final double percentageAdjust = _screenPercentage(screenSize.width);
-
-    //expanded para ocupar todo o restante da tela
     return Expanded(
       child: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        //alinhar widget ao centro da tela
-        mainAxisAlignment: MainAxisAlignment.center,
-
-        children: <Widget>[
-          //botao de menos do time 1
-          Expanded(
-            flex: 2,
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  //botao de mais do time 1
-                  IconButton(
-                    onPressed: () {
-                      placarController.addTeamPoints(Teams.one, 1);
-                    },
-                    iconSize: (50 * percentageAdjust),
-                    color: Colors.green[900],
-                    icon: const Icon(Icons.add_circle_outline),
-                    //mouseCursor: MaterialState.focused,
-                  ),
-
+        padding: const EdgeInsets.fromLTRB(15, 0, 15,0),
+        child: Column(
+          //crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              child: Row(
+                children: <Widget>[
                   //botao de menos do time 1
-                  IconButton(
-                    onPressed: () {
-                      placarController.addTeamPoints(Teams.one, -1);
-                    },
-                    iconSize: (50 * percentageAdjust),
-                    color: Colors.red[900],
-                    icon: const Icon(Icons.remove_circle_outline),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      //botao de mais do time 1
+                      IconButton(
+                        onPressed: () {
+                          placarController.addTeamPoints(Teams.one, 1);
+                        },
+                        iconSize: 60 * percentageAdjust,
+                        color: Colors.green[900],
+                        icon: const Icon(Icons.add_circle_outline),
+                        //mouseCursor: MaterialState.focused,
+                      ),
+                        
+                      //botao de menos do time 1
+                      IconButton(
+                        onPressed: () {
+                          placarController.addTeamPoints(Teams.one, -1);
+                        },
+                        iconSize: 60 * percentageAdjust,
+                        color: Colors.red[900],
+                        icon: const Icon(Icons.remove_circle_outline),
+                      ),
+                    ],
+                  ),
+              
+                  //time 1: pontos
+                  TeamPoints(placarController.teamOnePoints, percentageAdjust),
+                  //time 1: sets
+                  TeamSets(placarController.teamOneSets, percentageAdjust),
+              
+                  _resetButton(context),
+                  
+                  //time 2: sets
+                  TeamSets(placarController.teamTwoSets, percentageAdjust),
+                  //time 2: pontos
+                  TeamPoints(placarController.teamTwoPoints, percentageAdjust),
+              
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      //botao de mais do time 2
+                      IconButton(
+                        onPressed: () {
+                          placarController.addTeamPoints(Teams.two, 1);
+                        },
+                        iconSize: 60 * percentageAdjust,
+                        color: Colors.green[900],
+                        icon: const Icon(Icons.add_circle_outline),
+                      ),
+                      //botao de menos do time 2
+                      IconButton(
+                        onPressed: () {
+                          placarController.addTeamPoints(Teams.two, -1);
+                        },
+                        iconSize: 60 * percentageAdjust,
+                        color: Colors.red[900],
+                        icon: const Icon(Icons.remove_circle_outline),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
-          ),
-
-          //time 1: pontos
-          TeamPoints(placarController.teamOnePoints, percentageAdjust),
-          //time 1: sets
-          TeamSets(placarController.teamOneSets, percentageAdjust),
-
-          //botao de reset
-          Expanded(
-            flex: 2,
-            child: Container(
-              margin: EdgeInsets.fromLTRB(0, screenSize.height * 0.30, 0, 0),
-              //inkwell para adicionar long press
-              child: InkWell(
-                onLongPress: () => showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const  Text("Confirmação"),
-                          //rich text para poder colocar uma cor a palavra pontuação
-                          content: RichText(
-                            text: TextSpan(
-                              text: "Tem certeza de que deseja resetar os ",
-                              style: DefaultTextStyle.of(context).style,
-                              children: const <TextSpan>[
-                                TextSpan(
-                                  text: "SETS",
-                                  style: TextStyle(
-                                    color: Color.fromARGB(255, 199, 3, 3),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: "?",
-                                ),
-                              ],
-                            ),
-                          ),
-                          actions: <Widget>[
-                            TextButton(
-                              child: const Text("Cancelar",
-                                style: TextStyle(
-                                  color: Color.fromARGB(255, 102, 102, 102)
-                                ),
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).pop(); // Fecha o diálogo
-                              },
-                            ),
-                            TextButton(
-                              child: const Text("Sim"),
-                              onPressed: () {
-                                //caso confirme reset
-                                Navigator.of(context).pop(); // Fecha o diálogo
-                                placarController.resetSets();
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                //placarController.resetSets,
-                child:IconButton(
-                    onPressed: () => showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const  Text("Confirmação"),
-                          //rich text para poder colocar uma cor a palavra pontuação
-                          content: RichText(
-                            text: TextSpan(
-                              text: "Tem certeza de que deseja resetar a ",
-                              style: DefaultTextStyle.of(context).style,
-                              children: const <TextSpan>[
-                                TextSpan(
-                                  text: "PONTUAÇÃO",
-                                  style: TextStyle(
-                                    color: Colors.blue,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: "?",
-                                ),
-                              ],
-                            ),
-                          ),
-                          actions: <Widget>[
-                            TextButton(
-                              child: const Text("Cancelar",
-                                style: TextStyle(
-                                  color: Color.fromARGB(255, 102, 102, 102)
-                                ),
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).pop(); // Fecha o diálogo
-                              },
-                            ),
-                            TextButton(
-                              child: const Text("Sim"),
-                              onPressed: () {
-                                //caso confirme reset
-                                Navigator.of(context).pop(); // Fecha o diálogo
-                                placarController.resetPoints();
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                    //placarController.resetPoints,
-                    iconSize: (60 * percentageAdjust),
-                    color: Colors.blue[900],
-                    icon: const Icon(Icons.refresh_outlined),
-                  ),
-                
-              ),
-            ),
-          ),
-
-          //time 2: sets
-          TeamSets(placarController.teamTwoSets, percentageAdjust),
-          //time 2: pontos
-          TeamPoints(placarController.teamTwoPoints, percentageAdjust),
-
-          Expanded(
-            flex: 2,
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  //botao de mais do time 2
-                  IconButton(
-                    onPressed: () {
-                      placarController.addTeamPoints(Teams.two, 1);
-                    },
-                    iconSize: (50 * percentageAdjust),
-                    color: Colors.green[900],
-                    icon: const Icon(Icons.add_circle_outline),
-                  ),
-                  //botao de menos do time 2
-                  IconButton(
-                    onPressed: () {
-                      placarController.addTeamPoints(Teams.two, -1);
-                    },
-                    iconSize: (50 * percentageAdjust),
-                    color: Colors.red[900],
-                    icon: const Icon(Icons.remove_circle_outline),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
+            _buildLogWidget(context),
+          ],
+        ),
       ),
-    ));
+    );
+  }
+
+  Widget _resetButton(BuildContext context) {
+    return
+      //botao de reset
+      Container(
+        margin: EdgeInsets.only(bottom: 20*percentageAdjust),
+        alignment: Alignment.bottomCenter,
+        //margin: EdgeInsets.fromLTRB(0, screenSize.height * 0.30, 0, 0),
+        //inkwell para adicionar long press
+        child: InkWell(
+          onLongPress: () => showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const  Text("Confirmação"),
+                    //rich text para poder colocar uma cor a palavra pontuação
+                    content: RichText(
+                      text: TextSpan(
+                        text: "Tem certeza de que deseja resetar os ",
+                        style: DefaultTextStyle.of(context).style,
+                        children: const <TextSpan>[
+                          TextSpan(
+                            text: "SETS",
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 199, 3, 3),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          TextSpan(
+                            text: "?",
+                          ),
+                        ],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text("Cancelar",
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 102, 102, 102)
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Fecha o diálogo
+                        },
+                      ),
+                      TextButton(
+                        child: const Text("Sim"),
+                        onPressed: () {
+                          //caso confirme reset
+                          Navigator.of(context).pop(); // Fecha o diálogo
+                          placarController.resetSets();
+                        },
+                      ),
+                    ],
+                  );
+                },
+              ),
+          //placarController.resetSets,
+          child:IconButton(
+              onPressed: () => showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const  Text("Confirmação"),
+                    //rich text para poder colocar uma cor a palavra pontuação
+                    content: RichText(
+                      text: TextSpan(
+                        text: "Tem certeza de que deseja resetar a ",
+                        style: DefaultTextStyle.of(context).style,
+                        children: const <TextSpan>[
+                          TextSpan(
+                            text: "PONTUAÇÃO",
+                            style: TextStyle(
+                              color: Colors.blue,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          TextSpan(
+                            text: "?",
+                          ),
+                        ],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      TextButton(
+                        child: const Text("Cancelar",
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 102, 102, 102)
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop(); // Fecha o diálogo
+                        },
+                      ),
+                      TextButton(
+                        child: const Text("Sim"),
+                        onPressed: () {
+                          //caso confirme reset
+                          Navigator.of(context).pop(); // Fecha o diálogo
+                          placarController.resetPoints();
+                        },
+                      ),
+                    ],
+                  );
+                },
+              ),
+              //placarController.resetPoints,
+              iconSize: (70 * percentageAdjust),
+              color: Colors.blue[900],
+              icon: const Icon(Icons.refresh_outlined),
+            ),
+          
+        ),
+      );
   }
 }

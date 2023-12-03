@@ -88,13 +88,13 @@ class _ScanScreenState extends State<ScanScreen> {
           (d) => ConnectedDeviceTile(
             device: d,
             onDisconnect: () => onDisconnectPressed(d),
-            onConnect: () => onConnectPressed(d),
+            onConnect: () => onConnectPressed(context ,d),
           ),
         )
         .toList();
   }
 
-   void onConnectPressed(BluetoothDevice device) {
+   void onConnectPressed(BuildContext context ,BluetoothDevice device) {
     _bluetoothController.deviceConnected = device;  
     
 
@@ -104,12 +104,7 @@ class _ScanScreenState extends State<ScanScreen> {
       _bluetoothController.deviceConnected = BluetoothDevice.fromId("");
     });
 
-    
-
-    Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => PlacarApp()),
-              (Route<dynamic> route) => false,
-            );
+    Navigator.of(context).pop();
   }
 
   Future<void> onDisconnectPressed(BluetoothDevice device) async {
@@ -126,27 +121,27 @@ class _ScanScreenState extends State<ScanScreen> {
       FlutterBluePlus.startScan(timeout: const Duration(seconds: 15));
     }
     setState(() {});
-    return Future.delayed(Duration(milliseconds: 500));
+    return Future.delayed(const Duration(milliseconds: 500));
   }
 
   Widget buildScanButton(BuildContext context) {
     if (FlutterBluePlus.isScanningNow) {
       return FloatingActionButton(
-        child: const Icon(Icons.stop),
         onPressed: onStopPressed,
         backgroundColor: Colors.red,
         shape: RoundedRectangleBorder( // Define a forma como um círculo
           borderRadius: BorderRadius.circular(30.0), // Valor do raio para deixar o botão redondo
         ),
+        child: const Icon(Icons.stop),
       );
     } else {
       return FloatingActionButton(
-        child: const Text("SCAN"),
         onPressed: onScanPressed,
         backgroundColor: Color.fromARGB(255, 167, 166, 166),
         shape: RoundedRectangleBorder( // Define a forma como um círculo
           borderRadius: BorderRadius.circular(30.0), // Valor do raio para deixar o botão redondo
         ),
+        child: const Text("SCAN"),
       );
     }
   }
@@ -156,7 +151,7 @@ class _ScanScreenState extends State<ScanScreen> {
         .map(
           (r) => ScanResultTile(
             result: r,
-            onTap: () => onConnectPressed(r.device),
+            onTap: () => onConnectPressed(context, r.device),
           ),
         )
         .toList();

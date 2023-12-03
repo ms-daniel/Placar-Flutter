@@ -39,19 +39,15 @@ class _BluetoothMainState extends State<BluetoothMain> {
   Widget build(BuildContext context) {
     Widget? screen = _bluetoothController.adapterState == BluetoothAdapterState.off ? BluetoothOff(adapterState: _bluetoothController.adapterState) : ScanScreen();
 
-    return MaterialApp(
-      color: Colors.black,
-      home: screen,
-      //navigatorObservers: [BluetoothAdapterStateObserver()],
-    );
+    return screen;
   }
 }
 
-
+/*
 class BluetoothAdapterStateObserver extends NavigatorObserver {
-  /*StreamSubscription<BluetoothAdapterState>? _adapterStateSubscription;
+  StreamSubscription<BluetoothAdapterState>? _adapterStateSubscription;
 
-  @override
+  /*@override
   void didPush(Route route, Route? previousRoute) {
     super.didPush(route, previousRoute);
     if (route.settings.name == '/DeviceScreen') {
@@ -63,7 +59,7 @@ class BluetoothAdapterStateObserver extends NavigatorObserver {
         }
       });
     }
-  }
+  }*/
 
   @override
   void didPop(Route route, Route? previousRoute) {
@@ -71,5 +67,5 @@ class BluetoothAdapterStateObserver extends NavigatorObserver {
     // Cancela a inscrição quando a rota é removida da pilha
     _adapterStateSubscription?.cancel();
     _adapterStateSubscription = null;
-  }*/
-}
+  }
+}*/
