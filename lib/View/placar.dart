@@ -37,15 +37,16 @@ class _PlacarState extends State<Placar> {
 
   late StreamSubscription<bool> _servicesStreamSubscription;
 
-  bool tryit = false;
-
   List<int> _valueToSend  = [];
   List<int> _valueReceive = [];
 
   String _logText = "Sem serviço ou Desconectado";
 
-  //
+  //saber se ta separando os characteristics
   bool isRunning = false;
+
+  //saber se os characteristics foram separados e estão prontos para uso
+  bool isReady = false;
 
   @override
   void initState(){
@@ -64,6 +65,7 @@ class _PlacarState extends State<Placar> {
           isSubscriptionLastValue = false;
         }
         
+        isReady = false;
         setState(() {
           _logText = "Sem serviço ou Desconectado";
         });
@@ -79,7 +81,6 @@ class _PlacarState extends State<Placar> {
 
         _separateData();
 
-        //setState(() {});
       });
 
       isSubscriptionLastValue = true;
@@ -99,12 +100,15 @@ class _PlacarState extends State<Placar> {
       isSubscriptionLastValue = false;
     }
 
-      _connectionStateSubscription.cancel();
+    _connectionStateSubscription.cancel();
+    
+    isReady = false;
 
     super.dispose();
   }
 
   Future<void> _separateCharacteristics() async{
+    isRunning = true;
     setState(() {
       _logText = "Descobrindo serviços...";
     });
@@ -132,7 +136,11 @@ class _PlacarState extends State<Placar> {
         if(_bluetoothController.characteristicToReceive != null){
           _bluetoothController.characteristicToReceive!.setNotifyValue(true);
 
-          setState(() {});
+          isRunning = false;
+          isReady = true;
+          setState(() {
+            _logText = "Pronto para receber dados!";
+          });
         }
           
       }
@@ -157,7 +165,7 @@ class _PlacarState extends State<Placar> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           IndexedStack(
-            index: (isRunning) ? 1 : 0,
+            index: (isRunning) ? 1 : (isReady)? 2 : 0,
             children: const <Widget>[
               Icon(
                 Icons.close_outlined,
@@ -169,6 +177,10 @@ class _PlacarState extends State<Placar> {
                 child: CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation(Colors.grey),
                 ),
+              ),
+              Icon(
+                Icons.done,
+                color: Color.fromARGB(255, 8, 114, 8),
               ),
             ],
           ),
