@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:yon_scoreboard/Controller/placar_controller.dart';
+import 'package:yon_scoreboard/Utils/snackbar.dart';
 import 'package:yon_scoreboard/View/barra_superior_placar.dart';
 import 'package:yon_scoreboard/View/placar.dart';
 import 'package:provider/provider.dart';
 
 main() {
+  //debugPaintSizeEnabled = true;
   runApp(
     ChangeNotifierProvider(
       create: (context) => PlacarController(),
@@ -25,14 +27,6 @@ class PlacarApp extends StatefulWidget {
 }
 
 class _PlacarState extends State<PlacarApp> {
-  /*void _alterMaxPoints(int value) {
-    setState(() {
-      if (value > 0) {
-        this._maxPoints = value;
-      }
-    });
-    print('pontaçai max: $_maxPoints');
-  }*/
 
   @override
   void initState() {
@@ -46,16 +40,20 @@ class _PlacarState extends State<PlacarApp> {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Column(
-          children: <Widget>[
-            BarraSuperiorPlacar(),
-            Placar(),
-          ],
+    return MaterialApp(
+      home: ScaffoldMessenger(
+        key: Snackbar.snackBarKeyA,
+        child: Scaffold(
+          body: Column(
+            children: <Widget>[
+              BarraSuperiorPlacar(),
+              const Placar(),
+            ],
+          ),
+          backgroundColor: Colors.black,
         ),
-        backgroundColor: Colors.black,
-      ),
+      )
+      
     );
   }
 }
