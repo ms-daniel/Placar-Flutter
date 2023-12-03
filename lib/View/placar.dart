@@ -242,25 +242,10 @@ class _PlacarState extends State<Placar> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       //botao de mais do time 1
-                      IconButton(
-                        onPressed: () {
-                          placarController.addTeamPoints(Teams.one, 1);
-                        },
-                        iconSize: 50 * percentageAdjust,
-                        color: Colors.green[900],
-                        icon: const Icon(Icons.add_circle_outline),
-                        //mouseCursor: MaterialState.focused,
-                      ),
+                      _pointsButton(Teams.one, increment: 1, icon: Icons.add_circle_outline, color: Colors.green),
                         
                       //botao de menos do time 1
-                      IconButton(
-                        onPressed: () {
-                          placarController.addTeamPoints(Teams.one, -1);
-                        },
-                        iconSize: 50 * percentageAdjust,
-                        color: Colors.red[900],
-                        icon: const Icon(Icons.remove_circle_outline),
-                      ),
+                      _pointsButton(Teams.one, increment: -1, icon: Icons.remove_circle_outline, color: Colors.red),
                     ],
                   ),
               
@@ -279,24 +264,11 @@ class _PlacarState extends State<Placar> {
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      //botao de mais do time 2
-                      IconButton(
-                        onPressed: () {
-                          placarController.addTeamPoints(Teams.two, 1);
-                        },
-                        iconSize: 50 * percentageAdjust,
-                        color: Colors.green[900],
-                        icon: const Icon(Icons.add_circle_outline),
-                      ),
-                      //botao de menos do time 2
-                      IconButton(
-                        onPressed: () {
-                          placarController.addTeamPoints(Teams.two, -1);
-                        },
-                        iconSize: 50 * percentageAdjust,
-                        color: Colors.red[900],
-                        icon: const Icon(Icons.remove_circle_outline),
-                      ),
+                      //botao de mais do time 1
+                      _pointsButton(Teams.two, increment: 1, icon: Icons.add_circle_outline, color: Colors.green),
+                        
+                      //botao de menos do time 1
+                      _pointsButton(Teams.two, increment: -1, icon: Icons.remove_circle_outline, color: Colors.red),
                     ],
                   ),
                 ],
@@ -307,6 +279,23 @@ class _PlacarState extends State<Placar> {
         ),
       ),
     );
+  }
+
+  /// Constroi botoes de incremento e decremento do placar
+  /// [team] a qual time sera atribuido
+  /// [increment] incremento e decremento (+n/-n)
+  /// [icon] icone do botao
+  /// [color] Cor do icone
+  IconButton _pointsButton(Teams team, {required int increment, required IconData icon, required Color color} ) {
+    return IconButton(
+              onPressed: () {
+                placarController.addTeamPoints(team, increment);
+              },
+              iconSize: 50 * percentageAdjust,
+              color: color,
+              icon: Icon(icon),
+              //mouseCursor: MaterialState.focused,
+            );
   }
 
   Widget _resetButton(BuildContext context) {
@@ -321,48 +310,7 @@ class _PlacarState extends State<Placar> {
           onLongPress: () => showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const  Text("Confirmação"),
-                    //rich text para poder colocar uma cor a palavra pontuação
-                    content: RichText(
-                      text: TextSpan(
-                        text: "Tem certeza de que deseja resetar os ",
-                        style: DefaultTextStyle.of(context).style,
-                        children: const <TextSpan>[
-                          TextSpan(
-                            text: "SETS",
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 199, 3, 3),
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          TextSpan(
-                            text: "?",
-                          ),
-                        ],
-                      ),
-                    ),
-                    actions: <Widget>[
-                      TextButton(
-                        child: const Text("Cancelar",
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 102, 102, 102)
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pop(); // Fecha o diálogo
-                        },
-                      ),
-                      TextButton(
-                        child: const Text("Sim"),
-                        onPressed: () {
-                          //caso confirme reset
-                          Navigator.of(context).pop(); // Fecha o diálogo
-                          placarController.resetSets();
-                        },
-                      ),
-                    ],
-                  );
+                  return _resetAlertDialogSets(context);
                 },
               ),
           //placarController.resetSets,
@@ -370,48 +318,7 @@ class _PlacarState extends State<Placar> {
               onPressed: () => showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const  Text("Confirmação"),
-                    //rich text para poder colocar uma cor a palavra pontuação
-                    content: RichText(
-                      text: TextSpan(
-                        text: "Tem certeza de que deseja resetar a ",
-                        style: DefaultTextStyle.of(context).style,
-                        children: const <TextSpan>[
-                          TextSpan(
-                            text: "PONTUAÇÃO",
-                            style: TextStyle(
-                              color: Colors.blue,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          TextSpan(
-                            text: "?",
-                          ),
-                        ],
-                      ),
-                    ),
-                    actions: <Widget>[
-                      TextButton(
-                        child: const Text("Cancelar",
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 102, 102, 102)
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pop(); // Fecha o diálogo
-                        },
-                      ),
-                      TextButton(
-                        child: const Text("Sim"),
-                        onPressed: () {
-                          //caso confirme reset
-                          Navigator.of(context).pop(); // Fecha o diálogo
-                          placarController.resetPoints();
-                        },
-                      ),
-                    ],
-                  );
+                  return _resetAlertDialogPoints(context);
                 },
               ),
               //placarController.resetPoints,
@@ -422,5 +329,95 @@ class _PlacarState extends State<Placar> {
           
         ),
       );
+  }
+
+  AlertDialog _resetAlertDialogSets(BuildContext context) {
+    return AlertDialog(
+            title: const  Text("Confirmação"),
+            //rich text para poder colocar uma cor a palavra pontuação
+            content: RichText(
+              text: TextSpan(
+                text: "Tem certeza de que deseja resetar os ",
+                style: DefaultTextStyle.of(context).style,
+                children: const <TextSpan>[
+                  TextSpan(
+                    text: "SETS",
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 199, 3, 3),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "?",
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text("Cancelar",
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 102, 102, 102)
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Fecha o diálogo
+                },
+              ),
+              TextButton(
+                child: const Text("Sim"),
+                onPressed: () {
+                  //caso confirme reset
+                  Navigator.of(context).pop(); // Fecha o diálogo
+                  placarController.resetSets();
+                },
+              ),
+            ],
+          );
+  }
+
+  Widget _resetAlertDialogPoints(BuildContext context) {
+    return AlertDialog(
+            title: const  Text("Confirmação"),
+            //rich text para poder colocar uma cor a palavra pontuação
+            content: RichText(
+              text: TextSpan(
+                text: "Tem certeza de que deseja resetar a ",
+                style: DefaultTextStyle.of(context).style,
+                children: const <TextSpan>[
+                  TextSpan(
+                    text: "PONTUAÇÃO",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  TextSpan(
+                    text: "?",
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text("Cancelar",
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 102, 102, 102)
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop(); // Fecha o diálogo
+                },
+              ),
+              TextButton(
+                child: const Text("Sim"),
+                onPressed: () {
+                  //caso confirme reset
+                  Navigator.of(context).pop(); // Fecha o diálogo
+                  placarController.resetPoints();
+                },
+              ),
+            ],
+          );
   }
 }
