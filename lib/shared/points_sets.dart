@@ -16,7 +16,7 @@ class TeamPoints extends StatelessWidget {
               ? '0$_points'
               : _points.toString(),
           style: TextStyle(
-            fontSize: 220 * _fontAdjust,
+            fontSize: 230 * _fontAdjust,
             color: Colors.white,
             decoration: TextDecoration.underline,
             fontFamily: 'Nova Square',
