@@ -214,7 +214,11 @@ class _PlacarState extends State<Placar> {
 
   ///Usado para enviar dados para o servidor
   Future<void> _sendData() async{
-    dados = "${_placarController.teamOnePoints};${_placarController.teamOneSets};${_placarController.teamTwoPoints};${_placarController.teamTwoSets}"; 
+    if(!_placarController.inverterPlacar) {
+      dados = "${_placarController.teamOnePoints};${_placarController.teamOneSets};${_placarController.teamTwoPoints};${_placarController.teamTwoSets}";
+    } else {
+      dados = "${_placarController.teamTwoPoints};${_placarController.teamTwoSets};${_placarController.teamOnePoints};${_placarController.teamOneSets}";
+    } 
 
     _valueToSend = dados.codeUnits;
 
@@ -456,4 +460,5 @@ class _PlacarState extends State<Placar> {
             ],
           );
   }
+  
 }

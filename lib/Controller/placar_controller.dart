@@ -91,6 +91,10 @@ class PlacarController extends ChangeNotifier {
   ///Retorna a pontuação maxima do placar
   int get maxPoints => _placarModel.maxPoints;
 
+  //
+  bool get inverterPlacar => _placarModel.inverterPlacar;
+  set inverterPlacar (bool value) => _placarModel.inverterPlacar = value;
+
   /// Alterar pontuação do time 1:
   /// - [newPoints]: Inteiro contendo o novo valor
   set _addTeamOnePoints(int newPoint) => _placarModel.teamOnePoints += newPoint;
