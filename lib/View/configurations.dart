@@ -2,24 +2,46 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:yon_scoreboard/Controller/placar_controller.dart';
 
-class Configurations extends StatelessWidget {
-  const Configurations({super.key});
+class Configurations extends StatefulWidget {
+  const Configurations({Key? key}) : super(key: key);
+
+  @override
+  _ConfigurationsState createState() => _ConfigurationsState();
+}
+
+class _ConfigurationsState extends State<Configurations> {
+  late int dropdownValue;
+  late bool invertPontuacao;
+
+  @override
+  void initState() {
+    super.initState();
+    final placarController = context.read<PlacarController>();
+    dropdownValue = placarController.maxPoints;
+    invertPontuacao = placarController.inverterPlacar;
+  }
 
   @override
   Widget build(BuildContext context) {
     final placarController = context.watch<PlacarController>();
-    var dropdownValue = placarController.maxPoints;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Center(child: Text('Configurações')),
+        title: const Center(
+          child: Text(
+            'Configurações',
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white), // Adicione esta linha
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(4.0), // Altura da borda
+          preferredSize: const Size.fromHeight(4.0),
           child: Container(
             decoration: const BoxDecoration(
               border: Border(
-                bottom: BorderSide(
-                    width: 1, color: Colors.white), // Estilo da borda
+                bottom: BorderSide(width: 1, color: Colors.white),
               ),
             ),
           ),
@@ -35,8 +57,7 @@ class Configurations extends StatelessWidget {
                 fontSize: 18,
               ),
             ),
-            subtitle:
-                const Text('Definir pontuação máxima para finalizar o set'),
+            subtitle: const Text('Definir pontuação máxima para finalizar o set'),
             textColor: Colors.white,
             trailing: Container(
               alignment: Alignment.center,
@@ -50,15 +71,10 @@ class Configurations extends StatelessWidget {
                 elevation: 16,
                 onChanged: (int? value) {
                   if (value != null) {
-                    dropdownValue =
-                        value; // criar função para renderizar a view
+                    setState(() {
+                      dropdownValue = value;
+                    });
                     placarController.maxPoints = value;
-                    /*Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            Configurations(_alterMaxPoints, dropdownValue),
-                      ),
-                    );*/
                   }
                 },
                 items: List<DropdownMenuItem<int>>.generate(14, (index) {
@@ -73,6 +89,35 @@ class Configurations extends StatelessWidget {
                   );
                 }),
               ),
+            ),
+          ),
+          ListTile(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'Inverter Pontuação',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                  ),
+                ),
+                Checkbox(
+                  value: invertPontuacao,
+                  onChanged: (bool? value) {
+                    if (value != null) {
+                      setState(() {
+                        invertPontuacao = value;
+                      });
+                      placarController.inverterPlacar = value;
+                    }
+                  },
+                ),
+              ],
+            ),
+            subtitle: const Text(
+              'Inverte pontuação do placar físico',
+              style: TextStyle(color: Colors.white),
             ),
           ),
         ],

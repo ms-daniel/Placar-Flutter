@@ -6,8 +6,12 @@ class PlacarModel {
   int _teamOneSets = 0;
   int _teamTwoSets = 0;
   int _maxPoints = 15; //padrão
+  bool _inverterPlacar = false;
 
   //get
+  ///inverte o placar fisico ou nao
+  bool get inverterPlacar => _inverterPlacar;
+
   ///retorna pontos do primeiro time
   int get teamOnePoints => _teamOnePoints;
 
@@ -22,6 +26,10 @@ class PlacarModel {
 
   ///retorna pontuacao maxima
   int get maxPoints => _maxPoints;
+
+  //set
+  //////inverte o placar fisico ou nao
+  set inverterPlacar(bool value) => _inverterPlacar = value;
 
   ///altera pontuacao do time 1
   set teamOnePoints(int newPoint) =>
